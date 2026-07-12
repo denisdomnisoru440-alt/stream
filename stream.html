@@ -734,19 +734,11 @@ function openModal(id){
   var isFav=FAVS[item.id];
   var hasEps=item.episodes&&item.episodes.length;
   var epHtml='';
-  if(item.tp==='s'){
+  if(item.tp==='s'&&hasEps){
     epHtml='<div class="modal-subtitle">Серии</div><div class="modal-ep-list">';
-    if(hasEps){
-      item.episodes.forEach(function(e,i){
-        epHtml+='<div class="modal-ep" tabindex="0" onclick="playVideo(\''+e.vid.replace(/'/g,"\\'")+'\')"><span class="modal-ep-num">'+e.n+'</span><span class="modal-ep-title">'+e.t+'</span><span class="modal-ep-time">'+e.time+'</span><svg width="14" height="14" viewBox="0 0 24 24" fill="var(--accent)"><path d="M8 5v14l11-7z"/></svg></div>';
-      });
-    }else{
-      var defEps=['Эпизод 1','Эпизод 2','Эпизод 3','Эпизод 4','Эпизод 5','Эпизод 6','Эпизод 7','Эпизод 8'];
-      var defTimes=['44 мин','42 мин','48 мин','45 мин','50 мин','47 мин','46 мин','52 мин'];
-      defEps.forEach(function(e,i){
-        epHtml+='<div class="modal-ep" tabindex="0"><span class="modal-ep-num">'+(i+1)+'</span><span class="modal-ep-title">'+e+'</span><span class="modal-ep-time">'+defTimes[i]+'</span></div>';
-      });
-    }
+    item.episodes.forEach(function(e,i){
+      epHtml+='<div class="modal-ep" tabindex="0" onclick="playVideo(\''+e.vid.replace(/'/g,"\\'")+'\')"><span class="modal-ep-num">'+e.n+'</span><span class="modal-ep-title">'+e.t+'</span><span class="modal-ep-time">'+e.time+'</span><svg width="14" height="14" viewBox="0 0 24 24" fill="var(--accent)"><path d="M8 5v14l11-7z"/></svg></div>';
+    });
     epHtml+='</div>';
   }
   var vidHtml='';

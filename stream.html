@@ -713,8 +713,8 @@ function toggleFav(id,btn){
   b.textContent=c;b.style.display=c>0?'flex':'none';
 }
 
-function openSearch(){document.getElementById('searchOverlay').classList.add('open');document.getElementById('searchInput').focus()}
-function closeSearch(e){if(e&&e.target!==e.currentTarget)return;document.getElementById('searchOverlay').classList.remove('open');document.getElementById('searchInput').value='';document.getElementById('searchResults').innerHTML=''}
+function openSearch(){var o=document.getElementById('searchOverlay');o.style.display='flex';setTimeout(function(){document.getElementById('searchInput').focus()},100)}
+function closeSearch(e){if(e&&e.target!==e.currentTarget)return;var o=document.getElementById('searchOverlay');o.style.display='none';document.getElementById('searchInput').value='';document.getElementById('searchResults').innerHTML=''}
 function doSearch(q){
   var el=document.getElementById('searchResults');
   if(!q.trim()){el.innerHTML='';return}
@@ -929,7 +929,7 @@ function openMobileMenu(){document.getElementById('mobileMenu').classList.add('o
 function closeMobileMenu(){document.getElementById('mobileMenu').classList.remove('open')}
 
 document.addEventListener('keydown',function(e){
-  if(e.key==='/'&&!document.getElementById('searchOverlay').classList.contains('open')){e.preventDefault();openSearch()}
+  if(e.key==='/'&&document.getElementById('searchOverlay').style.display!=='flex'){e.preventDefault();openSearch()}
   if(e.key==='Escape'){closeSearch();closeMobileMenu();closeModal()}
 });
 

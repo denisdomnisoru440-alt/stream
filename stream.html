@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#6366f1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="StreamLang">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<title>StreamLang — фильмы и сериалы на английском с субтитрами</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/video.js@8.21.0/dist/video-js.min.css" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#08080d;
+  --bg2:#0f0f16;
+  --bg3:#16161f;
+  --bg4:#1e1e2a;
+  --bg5:#282838;
+  --surface:#12121b;
+  --text:#f0f0f5;
+  --text2:#8888a0;
+  --text3:#5a5a72;
+  --accent:#6366f1;
+  --accent2:#818cf8;
+  --accent-glow:rgba(99,102,241,.25);
+  --green:#34d399;
+  --orange:#fbbf24;
+  --red:#f87171;
+  --border:rgba(255,255,255,.06);
+  --border2:rgba(255,255,255,.1);
+  --glass:rgba(15,15,22,.75);
+  --radius:10px;
+  --radius-lg:16px;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.3);
+  --shadow-md:0 8px 32px rgba(0,0,0,.5);
+  --shadow-lg:0 16px 64px rgba(0,0,0,.6);
+  --transition:cubic-bezier(.4,0,.2,1);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;line-height:1.5}
+a{text-decoration:none;color:inherit}
+button{border:none;background:none;cursor:pointer;color:inherit;font-family:inherit}
+input{border:none;outline:none;font-family:inherit}
+
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--bg5);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--text3)}
+
+/* ===================== HEADER ===================== */
+.header{position:sticky;top:0;z-index:100;background:rgba(8,8,13,.8);backdrop-filter:blur(20px) saturate(1.4);border-bottom:1px solid var(--border)}
+.header-inner{max-width:1360px;margin:0 auto;padding:0 32px;height:60px;display:flex;align-items:center;gap:28px}
+.logo{font-size:18px;font-weight:800;letter-spacing:-.3px;white-space:nowrap;display:flex;align-items:center;gap:8px}
+.logo-icon{width:28px;height:28px;background:var(--accent);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:#fff}
+.logo-text{color:var(--text);font-weight:700}
+.logo-sub{color:var(--text3);font-weight:400;font-size:13px;margin-left:4px}
+
+.nav{display:flex;gap:2px}
+.nav a{padding:7px 14px;border-radius:8px;font-size:13px;font-weight:500;color:var(--text2);transition:all .2s var(--transition)}
+.nav a:hover{color:var(--text);background:rgba(255,255,255,.05)}
+.nav a.active{color:var(--text);background:rgba(255,255,255,.07)}
+
+.header-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.icon-btn{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--text2);transition:all .2s var(--transition);position:relative}
+.icon-btn:hover{color:var(--text);background:rgba(255,255,255,.06)}
+.icon-btn svg{width:17px;height:17px}
+.badge{position:absolute;top:2px;right:2px;background:var(--accent);color:#fff;font-size:9px;min-width:15px;height:15px;border-radius:7px;display:none;align-items:center;justify-content:center;font-weight:700;line-height:1}
+.auth-btn{height:34px;padding:0 16px;border-radius:8px;background:var(--accent);color:#fff;font-size:12px;font-weight:600;transition:all .2s var(--transition);letter-spacing:.01em}
+.auth-btn:hover{background:var(--accent2);transform:translateY(-1px);box-shadow:0 4px 16px var(--accent-glow)}
+
+/* ===================== SEARCH ===================== */
+.search-overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.75);backdrop-filter:blur(12px);display:none;align-items:flex-start;justify-content:center;padding-top:80px;animation:fadeIn .2s var(--transition)}
+.search-overlay.open{display:flex}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{opacity:0;transform:translateY(-12px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+.search-box{width:580px;max-width:94vw;background:var(--bg2);border-radius:var(--radius-lg);border:1px solid var(--border2);overflow:hidden;box-shadow:var(--shadow-lg);animation:slideUp .25s var(--transition)}
+.search-input-wrap{display:flex;align-items:center;padding:0 20px;gap:12px}
+.search-input-wrap svg{width:18px;height:18px;color:var(--text3);flex-shrink:0}
+.search-input{flex:1;height:52px;background:transparent;color:var(--text);font-size:15px;font-weight:400}
+.search-input::placeholder{color:var(--text3)}
+.search-kbd{font-size:11px;color:var(--text3);background:var(--bg4);padding:2px 7px;border-radius:4px;font-weight:500;border:1px solid var(--border2);flex-shrink:0}
+.search-results{max-height:380px;overflow-y:auto;border-top:1px solid var(--border)}
+.search-results::-webkit-scrollbar{width:4px}
+.search-result-item{display:flex;align-items:center;gap:14px;padding:10px 20px;cursor:pointer;transition:background .15s}
+.search-result-item:hover{background:rgba(255,255,255,.04)}
+.search-result-item img{width:36px;height:52px;object-fit:cover;border-radius:6px;background:var(--bg4)}
+.search-result-info h4{font-size:13px;font-weight:600;margin-bottom:2px}
+.search-result-info span{font-size:11px;color:var(--text3)}
+.search-empty{padding:32px;text-align:center;color:var(--text3);font-size:13px}
+
+/* ===================== HERO ===================== */
+.hero{position:relative;overflow:hidden}
+.hero-track{display:flex;transition:transform .6s var(--transition)}
+.hero-slide{min-width:100%;position:relative;aspect-ratio:2.4/1;overflow:hidden}
+.hero-slide img{width:100%;height:100%;object-fit:cover;filter:brightness(.65);transition:transform 8s linear}
+.hero-slide.active img{transform:scale(1.04)}
+.hero-slide .grad{position:absolute;inset:0;background:linear-gradient(90deg,rgba(8,8,13,.97) 0%,rgba(8,8,13,.85) 25%,rgba(8,8,13,.4) 55%,transparent 80%)}
+.hero-slide .grad-bottom{position:absolute;inset:0;background:linear-gradient(0deg,rgba(8,8,13,.9) 0%,transparent 40%)}
+.hero-slide .info{position:absolute;left:48px;bottom:56px;max-width:460px;z-index:2}
+.hero-slide .info .label{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--accent2);margin-bottom:10px}
+.hero-slide .info .label::before{content:'';width:3px;height:14px;background:var(--accent);border-radius:2px}
+.hero-slide .info h2{font-size:34px;font-weight:800;line-height:1.15;letter-spacing:-.5px;margin-bottom:10px}
+.hero-slide .info p{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:18px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;max-width:400px}
+.hero-slide .meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.rating{display:inline-flex;align-items:center;gap:5px}
+.rating span{padding:3px 8px;border-radius:5px;font-size:11px;font-weight:700;letter-spacing:.02em}
+.rating .kp{background:rgba(52,211,153,.12);color:var(--green)}
+.rating .imdb{background:rgba(129,140,248,.1);color:var(--accent2)}
+.rating .lang{background:rgba(99,102,241,.15);color:var(--accent)}
+.tag{font-size:11px;color:var(--text2);padding:3px 10px;background:rgba(255,255,255,.06);border-radius:5px;font-weight:500}
+.hero-cta{display:inline-flex;align-items:center;gap:8px;margin-top:18px;padding:10px 24px;background:var(--accent);color:#fff;border-radius:8px;font-size:13px;font-weight:600;transition:all .2s var(--transition)}
+.hero-cta:hover{background:var(--accent2);transform:translateY(-1px);box-shadow:0 4px 20px var(--accent-glow)}
+.hero-cta svg{width:16px;height:16px}
+.hero-dots{position:absolute;bottom:24px;right:48px;display:flex;gap:6px;z-index:3}
+.hero-dots button{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.25);transition:all .3s var(--transition)}
+.hero-dots button.active{background:var(--accent);width:24px;border-radius:4px}
+.hero-arrows{position:absolute;bottom:22px;right:140px;display:flex;gap:6px;z-index:3}
+.hero-arrow{width:34px;height:34px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;transition:all .2s var(--transition);font-size:14px;color:var(--text2)}
+.hero-arrow:hover{background:rgba(255,255,255,.1);color:var(--text)}
+
+/* ===================== SECTIONS ===================== */
+.content{position:relative;z-index:2}
+.section{margin-bottom:40px}
+.section-header{max-width:1360px;margin:0 auto;padding:0 32px;display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px}
+.section-title{font-size:17px;font-weight:700;letter-spacing:-.2px}
+.section-link{font-size:12px;font-weight:500;color:var(--text3);display:flex;align-items:center;gap:4px;transition:color .2s}
+.section-link:hover{color:var(--accent2)}
+.section-link svg{width:14px;height:14px}
+.section-scroll{display:flex;gap:14px;overflow-x:auto;padding:4px 32px 8px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scroll-padding-left:32px}
+.section-scroll::-webkit-scrollbar{display:none}
+
+/* ===================== CARDS ===================== */
+.card{min-width:175px;max-width:175px;scroll-snap-align:start;position:relative;border-radius:var(--radius);overflow:hidden;background:transparent;transition:transform .3s var(--transition);flex-shrink:0;cursor:pointer}
+.card:hover{transform:translateY(-6px)}
+.card-poster{position:relative;aspect-ratio:2/3;overflow:hidden;border-radius:var(--radius);background:var(--bg3)}
+.card-poster img{width:100%;height:100%;object-fit:cover;transition:transform .5s var(--transition);filter:brightness(.92)}
+.card:hover .card-poster img{transform:scale(1.06);filter:brightness(1)}
+.card-poster .grad{position:absolute;inset:0;background:linear-gradient(0deg,rgba(8,8,13,.9) 0%,rgba(8,8,13,.2) 40%,transparent 65%);opacity:0;transition:opacity .3s}
+.card:hover .card-poster .grad{opacity:1}
+.card-poster .hover-info{position:absolute;inset:0;padding:14px;display:flex;flex-direction:column;justify-content:flex-end;opacity:0;transition:opacity .3s}
+.card:hover .card-poster .hover-info{opacity:1}
+.card-poster .hover-info p{font-size:11px;color:var(--text2);line-height:1.5;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.card-poster .play-circle{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(.8);width:44px;height:44px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;opacity:0;transition:all .3s var(--transition);box-shadow:0 0 24px var(--accent-glow)}
+.card:hover .card-poster .play-circle{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.card-poster .play-circle svg{width:18px;height:18px;color:#fff;margin-left:2px}
+.card-logo{position:absolute;bottom:36px;left:0;right:0;z-index:3;display:flex;justify-content:center;pointer-events:none;padding:0 8px}
+.card-logo span{font-size:13px;font-weight:900;color:#fff;text-transform:uppercase;letter-spacing:.06em;text-shadow:0 2px 8px rgba(0,0,0,.8),0 0 20px rgba(0,0,0,.5);text-align:center;line-height:1.2;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;transition:all .3s var(--transition);opacity:1}
+.card:hover .card-logo span{opacity:0;transform:translateY(-8px)}
+
+.card-badge{position:absolute;top:8px;left:8px;padding:2px 7px;border-radius:4px;font-size:9px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;z-index:3;backdrop-filter:blur(8px)}
+.card-badge.hd{background:rgba(99,102,241,.85);color:#fff}
+.card-badge.uhd{background:rgba(251,191,36,.9);color:#000}
+.card-fav{position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:6px;background:rgba(8,8,13,.5);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;z-index:3;transition:all .2s;opacity:0}
+.card:hover .card-fav{opacity:1}
+.card-fav:hover{background:var(--accent)}
+.card-fav.active{opacity:1;background:var(--accent)}
+.card-fav svg{width:14px;height:14px}
+.card-episode{position:absolute;bottom:8px;left:8px;padding:3px 8px;border-radius:4px;background:rgba(8,8,13,.7);backdrop-filter:blur(6px);font-size:10px;font-weight:600;z-index:3}
+.card-episode.violet{color:var(--accent2)}
+.card-episode.orange{color:var(--orange)}
+
+.card-body{padding:10px 2px 0}
+.card-title{font-size:12.5px;font-weight:600;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-meta{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text3);font-weight:500}
+.card-meta .dot{width:3px;height:3px;border-radius:50%;background:var(--text3)}
+.card-ratings{display:flex;gap:3px;margin-top:5px}
+.card-ratings span{font-size:9.5px;padding:2px 5px;border-radius:4px;font-weight:700;letter-spacing:.02em}
+.card-ratings .kp{background:rgba(52,211,153,.1);color:var(--green)}
+.card-ratings .imdb{background:rgba(129,140,248,.08);color:var(--accent2)}
+.card-ratings .lang{background:rgba(99,102,241,.12);color:var(--accent)}
+
+/* ===================== GENRES ===================== */
+.genre-bar{max-width:1360px;margin:0 auto 36px;padding:0 32px}
+.genre-row{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px}
+.genre-row::-webkit-scrollbar{display:none}
+.genre-chip{padding:7px 18px;border-radius:20px;background:rgba(255,255,255,.04);border:1px solid var(--border);font-size:12px;font-weight:500;color:var(--text2);transition:all .2s var(--transition);white-space:nowrap;cursor:pointer}
+.genre-chip:hover{background:rgba(255,255,255,.07);color:var(--text);border-color:var(--border2)}
+.genre-chip.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* ===================== SOCIAL ===================== */
+.social-banner{max-width:1360px;margin:0 auto 40px;padding:0 32px}
+.social-inner{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px 28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px}
+.social-text h3{font-size:14px;font-weight:600;margin-bottom:3px}
+.social-text p{font-size:12px;color:var(--text3)}
+.social-btns{display:flex;gap:8px}
+.social-btn{padding:8px 20px;border-radius:8px;font-size:12px;font-weight:600;transition:all .2s var(--transition);border:1px solid var(--border)}
+.social-btn:hover{transform:translateY(-1px)}
+.social-btn.tg{background:rgba(42,171,238,.1);color:#2aabee;border-color:rgba(42,171,238,.2)}
+.social-btn.dc{background:rgba(88,101,242,.1);color:#5865F2;border-color:rgba(88,101,242,.2)}
+
+/* ===================== FOOTER ===================== */
+.footer{border-top:1px solid var(--border);padding:28px 32px;margin-top:48px}
+.footer-inner{max-width:1360px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.footer-left{font-size:12px;color:var(--text3)}
+.footer-links{display:flex;gap:20px}
+.footer-links a{font-size:12px;color:var(--text3);transition:color .2s}
+.footer-links a:hover{color:var(--text2)}
+
+/* ===================== MOBILE BAR ===================== */
+.mobile-bar{display:none;position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(8,8,13,.92);backdrop-filter:blur(20px);border-top:1px solid var(--border)}
+.mobile-bar-inner{display:flex;justify-content:space-around;padding:6px 0 max(6px,env(safe-area-inset-bottom))}
+.mobile-bar-item{display:flex;flex-direction:column;align-items:center;gap:1px;font-size:9.5px;color:var(--text3);padding:6px 14px;border-radius:8px;transition:color .2s;font-weight:500}
+.mobile-bar-item.active{color:var(--accent)}
+.mobile-bar-item svg{width:20px;height:20px}
+
+/* ===================== MOBILE MENU ===================== */
+.mobile-menu{display:none;position:fixed;inset:0;z-index:150;background:var(--bg);padding:24px;overflow-y:auto}
+.mobile-menu.open{display:block}
+.mobile-menu-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px}
+.mobile-menu-close{width:36px;height:36px;border-radius:8px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--text2)}
+.mobile-menu-links{display:flex;flex-direction:column;gap:2px}
+.mobile-menu-links a{padding:12px 14px;border-radius:8px;font-size:15px;font-weight:500;color:var(--text2);transition:all .15s}
+.mobile-menu-links a:hover{background:rgba(255,255,255,.04);color:var(--text)}
+
+/* ===================== RESPONSIVE ===================== */
+@media(max-width:1024px){
+  .hero-slide .info{left:32px;bottom:40px;max-width:380px}
+  .hero-slide .info h2{font-size:26px}
+  .card{min-width:155px;max-width:155px}
+}
+@media(max-width:768px){
+  .nav{display:none}
+  .auth-btn{display:none}
+  .mobile-bar{display:block}
+  body{padding-bottom:64px}
+  .header-inner{padding:0 16px;height:52px}
+  .hero-slide{aspect-ratio:16/9}
+  .hero-slide .info{left:16px;bottom:20px;max-width:75%}
+  .hero-slide .info h2{font-size:18px}
+  .hero-slide .info p{font-size:11px;-webkit-line-clamp:2;margin-bottom:10px}
+  .hero-slide .info .label{font-size:10px;margin-bottom:6px}
+  .hero-slide .meta{gap:6px}
+  .hero-cta{padding:8px 16px;font-size:12px;margin-top:12px}
+  .hero-dots,.hero-arrows{display:none}
+  .section-header{padding:0 16px}
+  .section-scroll{padding:4px 16px 8px;gap:10px}
+  .card{min-width:130px;max-width:130px}
+  .card-logo span{font-size:11px}
+  .card-body{padding:8px 0 0}
+  .card-title{font-size:11.5px}
+  .genre-bar{padding:0 16px}
+  .social-banner{padding:0 16px}
+  .footer{padding:24px 16px;padding-bottom:72px}
+}
+
+/* ===================== MOVIE MODAL ===================== */
+.modal-overlay{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.8);backdrop-filter:blur(10px);display:none;overflow-y:auto;padding:40px 16px}
+.modal-overlay.open{display:block}
+.modal-container{max-width:900px;margin:0 auto;position:relative;animation:slideUp .3s var(--transition)}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.modal-close{position:fixed;top:16px;right:24px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.08);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--text2);z-index:310;transition:all .2s;cursor:pointer}
+.modal-close:hover{background:rgba(255,255,255,.15);color:var(--text)}
+.modal-backdrop{position:relative;width:100%;aspect-ratio:2.3/1;border-radius:var(--radius-lg);overflow:hidden;margin-bottom:-60px}
+.modal-backdrop img{width:100%;height:100%;object-fit:cover;filter:brightness(.5)}
+.modal-backdrop .grad{position:absolute;inset:0;background:linear-gradient(0deg,var(--bg) 0%,rgba(8,8,13,.6) 40%,transparent 70%)}
+.modal-body{position:relative;z-index:2;max-width:900px;margin:0 auto;padding:0 16px}
+.modal-top{display:flex;gap:24px;align-items:flex-end;margin-bottom:24px}
+.modal-poster{width:160px;flex-shrink:0;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-lg);border:2px solid var(--border2)}
+.modal-poster img{width:100%;aspect-ratio:2/3;object-fit:cover;display:block}
+.modal-info{flex:1;padding-bottom:8px}
+.modal-info h1{font-size:26px;font-weight:800;letter-spacing:-.3px;line-height:1.2;margin-bottom:4px}
+.modal-info .subtitle{font-size:13px;color:var(--text2);margin-bottom:12px}
+.modal-ratings{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.modal-ratings .r-item{padding:5px 12px;border-radius:6px;font-size:12px;font-weight:700}
+.modal-ratings .r-kp{background:rgba(52,211,153,.12);color:var(--green)}
+.modal-ratings .r-im{background:rgba(129,140,248,.1);color:var(--accent2)}
+.modal-ratings .r-sl{background:rgba(99,102,241,.15);color:var(--accent)}
+.modal-meta-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.modal-tag{padding:4px 12px;border-radius:6px;font-size:12px;font-weight:500;background:rgba(255,255,255,.06);color:var(--text2)}
+.modal-tag.q-hd{background:rgba(99,102,241,.15);color:var(--accent)}
+.modal-tag.q-uhd{background:rgba(251,191,36,.15);color:var(--orange)}
+.modal-desc{font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:24px}
+.modal-actions{display:flex;gap:10px;margin-bottom:32px}
+.modal-btn{padding:10px 24px;border-radius:8px;font-size:13px;font-weight:600;transition:all .2s var(--transition);display:flex;align-items:center;gap:8px;border:1px solid transparent}
+.modal-btn svg{width:16px;height:16px}
+.modal-btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.modal-btn.primary:hover{background:var(--accent2);box-shadow:0 4px 20px var(--accent-glow)}
+.modal-btn.secondary{background:rgba(255,255,255,.06);color:var(--text);border-color:var(--border2)}
+.modal-btn.secondary:hover{background:rgba(255,255,255,.1)}
+.modal-btn.secondary.faved{background:rgba(99,102,241,.15);color:var(--accent);border-color:rgba(99,102,241,.3)}
+.modal-subtitle{font-size:15px;font-weight:600;margin-bottom:12px;color:var(--text)}
+.modal-ep-list{display:flex;flex-direction:column;gap:6px}
+.modal-ep{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:8px;background:rgba(255,255,255,.03);border:1px solid var(--border);transition:all .15s;cursor:pointer}
+.modal-ep:hover{background:rgba(255,255,255,.06);border-color:var(--border2)}
+.modal-ep-num{font-size:12px;font-weight:700;color:var(--text3);min-width:24px}
+.modal-ep-title{font-size:13px;font-weight:500;flex:1}
+.modal-ep-time{font-size:11px;color:var(--text3)}
+@media(max-width:768px){
+  .modal-overlay{padding:0}
+  .modal-backdrop{border-radius:0;aspect-ratio:16/9;margin-bottom:-40px}
+  .modal-body{padding:0 16px}
+  .modal-top{flex-direction:column;align-items:center;text-align:center}
+  .modal-poster{width:120px}
+  .modal-info h1{font-size:20px}
+  .modal-ratings,.modal-meta-row,.modal-actions{justify-content:center}
+  .modal-close{top:8px;right:8px}
+}
+
+/* ===================== VIDEO PLAYER ===================== */
+.modal-player{margin-bottom:24px;border-radius:var(--radius);overflow:hidden;background:#000;border:1px solid var(--border)}
+.modal-player video{width:100%;max-height:500px;display:block;outline:none}
+.modal-player-info{padding:10px 14px;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text3);background:var(--bg2)}
+.modal-player-info svg{width:14px;height:14px;color:var(--accent)}
+.video-js{font-family:'Inter',sans-serif}
+.video-js .vjs-big-play-button{font-size:3em;border:none;border-radius:50%;width:72px;height:72px;line-height:72px;top:50%;left:50%;margin-top:-36px;margin-left:-36px;background:rgba(99,102,241,.85);box-shadow:0 4px 24px rgba(99,102,241,.4);transition:all .2s}
+.video-js .vjs-big-play-button:hover{background:var(--accent);transform:scale(1.08)}
+.video-js .vjs-control-bar{background:linear-gradient(0deg,rgba(0,0,0,.85) 0%,transparent 100%);height:48px;padding:0 8px}
+.video-js .vjs-play-progress,.video-js .vjs-volume-level{background:var(--accent)}
+.video-js .vjs-slider{background:rgba(255,255,255,.15)}
+.video-js .vjs-load-progress{background:rgba(255,255,255,.08)}
+.video-js .vjs-load-progress div{background:rgba(255,255,255,.15)}
+.video-js .vjs-time-tooltip,.video-js .vjs-time-divider{display:none}
+.video-js .vjs-play-progress{border-radius:2px}
+.video-js .vjs-button>.vjs-icon-placeholder:before{line-height:48px}
+.video-js:hover .vjs-play-progress{background:var(--accent2)}
+
+/* ===================== PLAYER SETTINGS PANEL ===================== */
+.player-settings{position:absolute;bottom:56px;right:12px;z-index:20;background:rgba(15,15,22,.95);backdrop-filter:blur(16px);border:1px solid var(--border2);border-radius:var(--radius);width:280px;box-shadow:var(--shadow-lg);display:none;overflow:hidden}
+.player-settings.open{display:block;animation:slideUp .2s var(--transition)}
+.player-settings-head{padding:12px 16px;border-bottom:1px solid var(--border);font-size:13px;font-weight:700;color:var(--text);display:flex;align-items:center;justify-content:space-between}
+.player-settings-head button{font-size:18px;color:var(--text3);padding:2px 6px;border-radius:4px}
+.player-settings-head button:hover{color:var(--text);background:rgba(255,255,255,.06)}
+.ps-section{padding:10px 16px;border-bottom:1px solid var(--border)}
+.ps-section:last-child{border-bottom:none}
+.ps-label{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.ps-options{display:flex;flex-direction:column;gap:2px}
+.ps-opt{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:6px;font-size:12px;font-weight:500;color:var(--text2);cursor:pointer;transition:all .15s}
+.ps-opt:hover{background:rgba(255,255,255,.05);color:var(--text)}
+.ps-opt.active{background:rgba(99,102,241,.15);color:var(--accent2)}
+.ps-opt .check{width:14px;height:14px;border-radius:3px;border:1.5px solid var(--text3);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.ps-opt.active .check{background:var(--accent);border-color:var(--accent)}
+.ps-opt.active .check::after{content:'';width:7px;height:4px;border-left:1.5px solid #fff;border-bottom:1.5px solid #fff;transform:rotate(-45deg) translateY(-1px)}
+.ps-speed-row{display:flex;gap:4px;flex-wrap:wrap}
+.ps-speed-btn{padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;color:var(--text3);background:rgba(255,255,255,.04);border:1px solid var(--border);transition:all .15s;cursor:pointer}
+.ps-speed-btn:hover{background:rgba(255,255,255,.07);color:var(--text)}
+.ps-speed-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.ps-info{font-size:11px;color:var(--text3);padding:8px 16px;line-height:1.5}
+.player-settings-btn{position:absolute;bottom:10px;right:8px;width:36px;height:36px;border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--text2);transition:all .2s;z-index:15;background:transparent}
+.player-settings-btn:hover{color:var(--text);background:rgba(255,255,255,.1)}
+.player-settings-btn svg{width:18px;height:18px}
+.modal-player{position:relative}
+
+/* ===================== IMAGE LOADING ===================== */
+.card-poster img,.hero-slide img{background:var(--bg3)}
+.card-poster img:not([src]),.card-poster img[src=""]{opacity:0}
+.card-poster img{opacity:1;transition:opacity .4s var(--transition)}
+.card-poster img.loading{opacity:0}
+.card-poster img.loaded{opacity:1}
+.hero-slide img{opacity:1;transition:filter .6s,opacity .4s}
+.hero-slide img.loading{opacity:0}
+.hero-slide img.loaded{opacity:1}
+@keyframes shimmer{0%{background-position:-400px 0}100%{background-position:400px 0}}
+.skeleton{background:linear-gradient(90deg,var(--bg3) 25%,var(--bg4) 50%,var(--bg3) 75%);background-size:800px 100%;animation:shimmer 1.5s infinite linear}
+
+/* ===================== ANIMATIONS ===================== */
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.anim{animation:fadeUp .5s var(--transition) both}
+.anim-d1{animation-delay:.05s}
+.anim-d2{animation-delay:.1s}
+.anim-d3{animation-delay:.15s}
+
+*:focus{outline:none}
+@media(hover:none)and(pointer:coarse){
+  .card,.genre-chip,.modal-btn,.hero-cta,.nav a,.mobile-bar-item,.icon-btn,.auth-btn,.modal-ep{outline:none}
+  .card:focus,.genre-chip:focus,.modal-btn:focus,.hero-cta:focus,.nav a:focus,.mobile-bar-item:focus,.icon-btn:focus,.auth-btn:focus,.modal-ep:focus{box-shadow:0 0 0 2px var(--accent);transform:scale(1.03)}
+  .card:focus .card-poster img{transform:scale(1.06);filter:brightness(1)}
+}
+@media screen and (min-width:1024px)and (max-height:800px){
+  .hero-slide{aspect-ratio:3/1}
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <a href="#" class="logo">
+      <div class="logo-icon">S</div>
+      <span class="logo-text">StreamLang</span>
+    </a>
+    <nav class="nav">
+      <a href="#" class="active" onclick="scrollToSection('new')">Новинки</a>
+      <a href="#" onclick="scrollToSection('films')">Фильмы</a>
+      <a href="#" onclick="scrollToSection('series')">Сериалы</a>
+      <a href="#" onclick="scrollToSection('genres')">Жанры</a>
+      <a href="#" onclick="scrollToSection('collections')">Коллекции</a>
+    </nav>
+    <div class="header-right">
+      <button class="icon-btn" onclick="openSearch()" title="Поиск">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </button>
+      <button class="icon-btn" onclick="alert('Закладки')" title="Закладки">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+        <span class="badge" id="fav-count">0</span>
+      </button>
+      <button class="icon-btn" onclick="alert('Словарь')" title="Словарь">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+      </button>
+      <button class="auth-btn">Войти</button>
+    </div>
+  </div>
+</header>
+
+<div class="search-overlay" id="searchOverlay" onclick="closeSearch(event)">
+  <div class="search-box" onclick="event.stopPropagation()">
+    <div class="search-input-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input class="search-input" id="searchInput" type="text" placeholder="Фильм, сериал, жанр..." oninput="doSearch(this.value)">
+      <span class="search-kbd">ESC</span>
+    </div>
+    <div class="search-results" id="searchResults"></div>
+  </div>
+</div>
+
+<div class="mobile-menu" id="mobileMenu">
+  <div class="mobile-menu-header">
+    <div class="logo"><div class="logo-icon">S</div><span class="logo-text">StreamLang</span></div>
+    <button class="mobile-menu-close" onclick="closeMobileMenu()">&times;</button>
+  </div>
+  <div class="mobile-menu-links">
+    <a href="#" onclick="scrollToSection('new');closeMobileMenu()">Новинки</a>
+    <a href="#" onclick="scrollToSection('films');closeMobileMenu()">Фильмы</a>
+    <a href="#" onclick="scrollToSection('series');closeMobileMenu()">Сериалы</a>
+    <a href="#" onclick="scrollToSection('genres');closeMobileMenu()">Жанры</a>
+    <a href="#" onclick="scrollToSection('collections');closeMobileMenu()">Коллекции</a>
+    <a href="#" onclick="closeMobileMenu()">Мой словарь</a>
+    <a href="#" onclick="closeMobileMenu()">Мои закладки</a>
+  </div>
+</div>
+
+<div class="hero" id="heroSlider">
+  <div class="hero-track" id="heroTrack"></div>
+  <div class="hero-dots" id="heroDots"></div>
+  <div class="hero-arrows">
+    <button class="hero-arrow" tabindex="0" onclick="slideHero(-1)">&#8592;</button>
+    <button class="hero-arrow" tabindex="0" onclick="slideHero(1)">&#8594;</button>
+  </div>
+</div>
+
+<div class="social-banner">
+  <div class="social-inner">
+    <div class="social-text">
+      <h3>Смотрите фильмы и сериалы на английском</h3>
+      <p>Русские, английские и двойные субтитры для изучения языка.</p>
+    </div>
+    <div class="social-btns">
+      <a class="social-btn tg" href="#">Telegram</a>
+      <a class="social-btn dc" href="#">Discord</a>
+    </div>
+  </div>
+</div>
+
+<div class="genre-bar" id="sec-genres">
+  <div class="genre-row" id="genreRow"></div>
+</div>
+
+<div id="app"></div>
+
+<!-- Movie Detail Modal -->
+<div class="modal-overlay" id="movieModal" onclick="closeModal(event)">
+  <button class="modal-close" onclick="closeModal()">&times;</button>
+  <div class="modal-container" id="modalContainer"></div>
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-left">&copy; 2026 StreamLang</div>
+    <div class="footer-links">
+      <a href="#">О сервисе</a>
+      <a href="#">Обратная связь</a>
+      <a href="#">Условия</a>
+    </div>
+  </div>
+</footer>
+
+<div class="mobile-bar">
+  <div class="mobile-bar-inner">
+    <a class="mobile-bar-item active" href="#" onclick="scrollToSection('new')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m3 9 9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+      Главная
+    </a>
+    <a class="mobile-bar-item" href="#" onclick="scrollToSection('films')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="2" width="20" height="20" rx="2.18"/><path d="M7 2v20M17 2v20M2 12h20M2 7h5M2 17h5M17 7h5M17 17h5"/></svg>
+      Фильмы
+    </a>
+    <a class="mobile-bar-item" href="#" onclick="scrollToSection('series')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="15" rx="2"/><path d="M17 2l-5 5-5-5"/></svg>
+      Сериалы
+    </a>
+    <a class="mobile-bar-item" href="#">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+      Словарь
+    </a>
+    <a class="mobile-bar-item" href="#" onclick="openMobileMenu()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+      Ещё
+    </a>
+  </div>
+</div>
+
+<script>
+var T="https://image.tmdb.org/t/p";
+var ALL=[
+  {id:1,t:"Dutton Ranch",r:"Даттон Ранч",y:2026,tp:"s",g:["Драма","Вестерн"],d:"Рип Уилер и Бет Даттон едут в Техас в надежде построить новый дом и начать всё сначала. Спин-офф «Йеллоустона».",kp:8.9,im:8.5,sl:9.6,ep:"3 серия",q:"hd",p:"/lqoMzCcZYEFK729d6qzt349fB4o.jpg",b:"/rMvPXx83jjjAPlRNYLk1p8e5Bx.jpg"},
+  {id:2,t:"The Devil Wears Prada 2",r:"Дьявол носит Прада 2",y:2026,tp:"f",g:["Драма","Комедия"],d:"Миранда Пристли борется за выживание журнала в эпоху новых медиа. Мэрил Стрип в сиквеле культового драмеди.",kp:6.8,im:6.7,sl:7.4,ep:"",q:"hd",p:"/9UwZ9e8YF3Zf5KxPz0p8VfDf3bA.jpg",b:"/sWgBv7LV2PRoQgkxwlibdGXKz1S.jpg"},
+  {id:3,t:"Clarkson's Farm",r:"Ферма Кларксона",y:2021,tp:"s",g:["Комедия","Документальный"],d:"Джереми Кларксон пробует себя в роли фермера — ему предстоит столкнуться со всеми трудностями сельского хозяйства.",kp:9.1,im:9.0,sl:8.5,ep:"4 сезон",q:"hd",p:"/lJ700Ewa8V22EVBMPJfJrKYbGgj.jpg",b:"/xIWQhB2FkMOA8K1BNCgjb5W40wq.jpg"},
+  {id:4,t:"Spider-Man Noir",r:"Паук Нуар",y:2026,tp:"s",g:["Фантастика","Боевик"],d:"Стилизация под фильм-нуар пополам с супергеройским комиксом. Николас Кейдж играет необычную версию Человека-паука.",kp:7.7,im:8.3,sl:8.6,ep:"5 серия",q:"hd",p:"/tXlFSMVIfsJpFzmk79vnsIRUSjb.jpg",b:"/kYgQzzjNis5jJalYtIHgrom0gOx.jpg"},
+  {id:5,t:"Off Campus",r:"Вне кампуса",y:2026,tp:"s",g:["Мелодрама","Драма"],d:"Фиктивные отношения отличницы и хоккеиста перерастают в настоящие. Хитовый ромком по канадскому бестселлеру.",kp:8.4,im:8.3,sl:9.4,ep:"6 серия",q:"hd",p:"/sSthA9wduZny4eRyr0XfbKh3MlR.jpg",b:"/qhb1qOilapbapxWQn9jtRCMwXJF.jpg"},
+  {id:6,t:"Hoppers",r:"Хопперы",y:2026,tp:"f",g:["Комедия","Семейный"],d:"Мэйбл хочет спасти от уничтожения лесной пруд, который любила её недавно скончавшаяся бабуля. Новый хит Pixar.",kp:7.7,im:7.6,sl:9.0,ep:"",q:"hd",p:"/b3SHdMnqWfRBVKEV1PpnFdTbTP.jpg",b:"/xg27NrXi7VXCGUr7MN75U7pSwmq.jpg"},
+  {id:7,t:"Silo",r:"Укрытие",y:2023,tp:"s",g:["Триллер","Фантастика"],d:"В постапокалиптическом будущем последняя жилая община людей живёт в гигантском укрытии под землёй.",kp:8.0,im:8.3,sl:9.5,ep:"2 серия",q:"hd",p:"/g7xILOW892lmuXy9M3qQ8U9pEoC.jpg",b:"/dCneFm33cI6QMnRMySfMq5bMnKd.jpg"},
+  {id:8,t:"Cape Fear",r:"Мыс страха",y:2026,tp:"s",g:["Триллер","Драма"],d:"Адвокат и его семья становятся объектом мести бывшего преступника. Напряжённый ремейк классического триллера.",kp:7.3,im:7.4,sl:9.6,ep:"7 серия",q:"hd",p:"/dm6V0dRpNfJhz3PiPoDLlYdwbMj.jpg",b:"/hR1bKbRpHt7m6X3rEBVSQIbQx0R.jpg"},
+  {id:9,t:"Star City",r:"Звёздный городок",y:2026,tp:"s",g:["Фантастика","Драма"],d:"Группа астронавтов отправляется на первую миссию к далёкой планете, сталкиваясь с невероятными открытиями.",kp:7.6,im:7.2,sl:7.0,ep:"8 серия",q:"hd",p:"/qZtC6T0ujrBhZ2M4N6wC9Lp5cVh.jpg",b:"/ggFHVNu6YYI5L9pCfOacjizRGt.jpg"},
+  {id:10,t:"The Last of Us",r:"Одни из нас",y:2023,tp:"s",g:["Драма","Фантастика"],d:"В постапокалиптическом мире контрабандист соглашается доставить 14-летнюю девочку через заражённые территории.",kp:8.5,im:8.8,sl:9.2,ep:"2 сезон",q:"hd",p:"/uKvVjHNqB5VmOrdxqAt2F7J78ED.jpg",b:"/lGiDj1sJ7yAziZ92LzH1234qO5.jpg"},
+  {id:11,t:"Severance",r:"Расчленение",y:2022,tp:"s",g:["Триллер","Детектив"],d:"Сотрудники компании подвергаются процедуре, разделяющей рабочую и личную память.",kp:8.2,im:8.7,sl:9.1,ep:"2 сезон",q:"hd",p:"/dOBkbLjmW1iU2VlLwPYFa1qWlqB.jpg",b:"/5nzfriMzLGLgjm9x1wQ01X8R1w.jpg"},
+  {id:12,t:"Oppenheimer",r:"Оппенгеймер",y:2023,tp:"f",g:["Драма","Исторический"],d:"История жизни физика-теоретика Роберта Оппенгеймера и его роли в создании атомной бомбы.",kp:8.5,im:8.3,sl:8.8,ep:"",q:"uhd",p:"/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg",b:"/fm6KqXpk3M2HVveHwCrBSSBaO0V.jpg"},
+  {id:13,t:"The Bear",r:"Медведь",y:2022,tp:"s",g:["Драма","Комедия"],d:"Молодой шеф-повар из мира высокой кухни возвращается в родной Чикаго, чтобы управлять семейным сэндвич-шопом.",kp:8.1,im:8.6,sl:8.9,ep:"3 сезон",q:"hd",p:"/sHFl2mMIBaO8pK0dKkPqf0PqHkq.jpg",b:"/xiDdVC7Q1VkbMX0rCbLzRD3bJ7O.jpg"},
+  {id:14,t:"Dune: Part Two",r:"Дюна: Часть вторая",y:2024,tp:"f",g:["Фантастика","Приключения"],d:"Пол Атрейдес объединяется с Чани и фрименами, чтобы отомстить заговорщикам, уничтожившим его семью.",kp:8.3,im:8.5,sl:8.7,ep:"",q:"uhd",p:"/1pdfLvkbY9ohJlCjQH2CZjjYVvJ.jpg",b:"/xOMo8BRK7PfcJv9JCnx7s5hj0PX.jpg"},
+  {id:15,t:"Shogun",r:"Сёгун",y:2024,tp:"s",g:["Драма","Исторический"],d:"Английский моряк оказывается в центре борьбы за власть в феодальной Японии XVI века.",kp:8.6,im:8.7,sl:9.3,ep:"1 сезон",q:"hd",p:"/7O4iVfOMQmdCSxhOg1WzGk456ca.jpg",b:"/sSjkfffsVrki7gCn6z31XxZ0Kdm.jpg"},
+  {id:16,t:"Fallout",r:"Фоллаут",y:2024,tp:"s",g:["Фантастика","Боевик"],d:"Через 200 лет после ядерного апокалипсиса обитатели убежищ впервые выходят на поверхность.",kp:8.0,im:8.2,sl:8.6,ep:"2 сезон",q:"hd",p:"/AnsSKR4yYfBIFg7JfbPzMNFSKwq.jpg",b:"/v9M100XyLBHiL0YPj9MxVn9t7nN.jpg"},
+  {id:17,t:"Poor Things",r:"Бедные-бедные создания",y:2023,tp:"f",g:["Фантастика","Комедия"],d:"Белла Бакстер — молодая женщина, воскрешённая эксцентричным учёным. Она готова изучать мир и бунтовать.",kp:7.9,im:7.8,sl:8.4,ep:"",q:"uhd",p:"/kCGlIMHnOm8JPXq3rXM6c5wMxcT.jpg",b:"/bQS43HSLZzMjZkcHJz4fGc9fItA.jpg"},
+  {id:18,t:"True Detective",r:"Настоящий детектив",y:2014,tp:"s",g:["Детектив","Триллер"],d:"Двое детективов расследуют серийные убийства в Луизиане на протяжении 17 лет.",kp:8.4,im:9.0,sl:8.8,ep:"4 сезона",q:"hd",p:"/mPpZzp7P1YLDgYb5Y5YRi0BjPj.jpg",b:"/kZ790x6CkDMVYnYi9WRX5Rr0GfB.jpg"},
+  {id:19,t:"Breaking Bad",r:"Во все тяжкие",y:2008,tp:"s",g:["Драма","Триллер"],d:"Учитель химии, узнав о смертельном диагнозе, начинает производить метамфетамин, чтобы обеспечить семью.",kp:9.2,im:9.5,sl:9.4,ep:"5 сезон",q:"hd",p:"/ggFHVNu6YYI5L9pCfOacjizRGt.jpg",b:"/tsRy63Mu5cu8etL1X7ZLyf7UP1M.jpg"},
+  {id:20,t:"Inception",r:"Начало",y:2010,tp:"f",g:["Фантастика","Боевик"],d:"Вор, специализирующийся на краже секретов из снов других людей, получает задание внедрить идею в сознание человека.",kp:8.9,im:8.8,sl:9.1,ep:"",q:"uhd",p:"/oYuLEt3zVCKq57qu2F8dT7NIa6f.jpg",b:"/8ZTVqvKDQ8emSGUEMjsS4yHAwrp.jpg"},
+  {id:21,t:"Family Guy",r:"Гриффины",y:1999,tp:"s",g:["Комедия","Мультфильм"],d:"Семья Гриффинов — Dysfunctionality на максимуме. Питер — невежествованный отец, Лоис — терпеливая жена, Стюи — гениальный злодей-младенец, Брайан — пьющий пёс-интеллектуал, Мег и Крис — страдающие подростки.",kp:8.3,im:8.1,sl:8.0,ep:"21 сезон",q:"hd",p:"/g6PGQLN07UVj6BCIgRmamz1wktw.jpg",b:"/7Q7h1MOdMtEV9BM8n3b4RWBCwbp.jpg",
+    episodes:[
+      {n:1,t:"Oscars Guy",vid:"videos/fg_S21E01.mp4",time:"22 мин"},
+      {n:2,t:"Bend or Blockbuster",vid:"videos/fg_S21E02.mp4",time:"22 мин"},
+      {n:3,t:"A Wife-Changing Experience",vid:"videos/fg_S21E03.mp4",time:"22 мин"},
+      {n:4,t:"The Munchurian Candidate",vid:"videos/fg_S21E04.mp4",time:"22 мин"},
+      {n:5,t:"Unzipped Code",vid:"videos/fg_S21E05.mp4",time:"22 мин"},
+      {n:6,t:"Happy Holo-ween",vid:"videos/fg_S21E06.mp4",time:"22 мин"},
+      {n:7,t:"The Stewaway",vid:"videos/fg_S21E07.mp4",time:"22 мин"},
+      {n:8,t:"Get Stewie",vid:"videos/fg_S21E08.mp4",time:"22 мин"},
+      {n:9,t:"Carny Knowledge",vid:"videos/fg_S21E09.mp4",time:"22 мин"},
+      {n:10,t:"The Candidate",vid:"videos/fg_S21E10.mp4",time:"22 мин"},
+      {n:11,t:"Love Story Guy",vid:"videos/fg_S21E11.mp4",time:"22 мин"},
+      {n:12,t:"Old West",vid:"videos/fg_S21E12.mp4",time:"22 мин"},
+      {n:13,t:"Single White Dad",vid:"videos/fg_S21E13.mp4",time:"22 мин"},
+      {n:14,t:"White Meg Can't Jump",vid:"videos/fg_S21E14.mp4",time:"22 мин"},
+      {n:15,t:"Adoptation",vid:"videos/fg_S21E15.mp4",time:"22 мин"},
+      {n:16,t:"The Bird Reich",vid:"videos/fg_S21E16.mp4",time:"22 мин"},
+      {n:17,t:"A Bottle Episode",vid:"videos/fg_S21E17.mp4",time:"22 мин"},
+      {n:18,t:"Vat Man & Rob 'Em",vid:"videos/fg_S21E18.mp4",time:"22 мин"},
+      {n:19,t:"From Russia With Love",vid:"videos/fg_S21E19.mp4",time:"22 мин"},
+      {n:20,t:"Adult Education",vid:"videos/fg_S21E20.mp4",time:"22 мин"}
+    ]}
+];
+
+var GENRES=["Все","Драма","Триллер","Фантастика","Комедия","Боевик","Детектив","Исторический","Мелодрама","Документальный","Приключения","Семейный","Ужасы","Мультфильм"];
+var FAVS={};
+var curSlide=0;
+var heroTimer;
+var activeGenre="Все";
+
+function posterUrl(item,size){
+  if(item.p.charAt(0)==='/') return T+'/'+size+item.p;
+  return item.p;
+}
+function backdropUrl(item){
+  if(item.b.charAt(0)==='/') return T+'/w1280'+item.b;
+  return item.b;
+}
+function heroItems(){return ALL.slice(0,5)}
+
+function renderCard(item){
+  var ec=item.id%2===0?'violet':'orange';
+  var hue=(item.id*37)%360;
+  return '<article class="card" tabindex="0" onclick="openModal('+item.id+')" onkeydown="if(event.key===\'Enter\')openModal('+item.id+')">'+
+    '<div class="card-poster">'+
+      '<img class="loading" src="'+posterUrl(item,'w342')+'" alt="'+item.r+'" loading="lazy" onload="this.classList.remove(\'loading\');this.classList.add(\'loaded\')" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">'+
+      '<div style="display:none;width:100%;height:100%;position:absolute;inset:0;background:linear-gradient(135deg,hsl('+hue+',40%,18%),hsl('+(hue+30)+',35%,12%));align-items:center;justify-content:center;font-size:13px;font-weight:700;color:rgba(255,255,255,.5);text-align:center;padding:12px">'+item.r+'</div>'+
+      '<div class="grad"></div>'+
+      '<div class="hover-info"><p>'+item.d+'</p></div>'+
+      '<div class="play-circle"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>'+
+      '<div class="card-logo"><span>'+item.t+'</span></div>'+
+      '<span class="card-badge '+item.q+'">'+item.q.toUpperCase()+'</span>'+
+      '<button class="card-fav'+(FAVS[item.id]?' active':'')+'" onclick="event.stopPropagation();toggleFav('+item.id+',this)"><svg viewBox="0 0 24 24" fill="'+(FAVS[item.id]?'currentColor':'none')+'" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>'+
+      (item.ep?'<div class="card-episode '+ec+'">'+item.ep+'</div>':'')+
+    '</div>'+
+    '<div class="card-body">'+
+      '<div class="card-title">'+item.r+'</div>'+
+      '<div class="card-meta"><span>'+item.y+'</span><span class="dot"></span><span>'+item.g[0]+'</span></div>'+
+      '<div class="card-ratings"><span class="kp">'+item.kp+'</span><span class="imdb">'+item.im+'</span><span class="lang">★ '+item.sl+'</span></div>'+
+    '</div>'+
+  '</article>';
+}
+
+function renderHero(){
+  var items=heroItems();
+  var track=document.getElementById('heroTrack');
+  var dots=document.getElementById('heroDots');
+  var h='',d='';
+  items.forEach(function(it,i){
+    h+='<div class="hero-slide'+(i===0?' active':'')+'">'+
+      '<img class="loading" src="'+backdropUrl(it)+'" alt="'+it.r+'" onload="this.classList.remove(\'loading\');this.classList.add(\'loaded\')" onerror="this.style.background=\'linear-gradient(135deg,#1a1a2e,#16213e)\';this.classList.remove(\'loading\');this.classList.add(\'loaded\')">'+
+      '<div class="grad"></div>'+
+      '<div class="grad-bottom"></div>'+
+      '<div class="info">'+
+        '<div class="label">'+(it.tp==='s'?'Сериал':'Фильм')+'</div>'+
+        '<h2>'+it.r+'</h2>'+
+        '<p>'+it.d+'</p>'+
+        '<div class="meta">'+
+          '<div class="rating"><span class="kp">'+it.kp+'</span><span class="imdb">'+it.im+'</span><span class="lang">★ '+it.sl+'</span></div>'+
+          '<span class="tag">'+it.y+'</span>'+
+          '<span class="tag">'+it.g[0]+'</span>'+
+          (it.ep?'<span class="tag">'+it.ep+'</span>':'')+
+        '</div>'+
+        '<button class="hero-cta" onclick="openModal('+it.id+')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>Смотреть</button>'+
+      '</div>'+
+    '</div>';
+    d+='<button class="'+(i===0?'active':'')+'" onclick="goToSlide('+i+')"></button>';
+  });
+  track.innerHTML=h;
+  dots.innerHTML=d;
+  startHeroTimer();
+}
+
+function slideHero(dir){
+  curSlide=(curSlide+dir+heroItems().length)%heroItems().length;
+  updateHero();
+}
+function goToSlide(i){curSlide=i;updateHero()}
+function updateHero(){
+  var track=document.getElementById('heroTrack');
+  track.style.transform='translateX(-'+curSlide*100+'%)';
+  document.querySelectorAll('.hero-slide').forEach(function(s,i){s.classList.toggle('active',i===curSlide)});
+  document.querySelectorAll('.hero-dots button').forEach(function(b,i){b.classList.toggle('active',i===curSlide)});
+  startHeroTimer();
+}
+function startHeroTimer(){clearInterval(heroTimer);heroTimer=setInterval(function(){slideHero(1)},6000)}
+
+function renderSections(){
+  var films=ALL.filter(function(i){return i.tp==='f'});
+  var series=ALL.filter(function(i){return i.tp==='s'});
+  var filtered=activeGenre==='Все'?ALL:ALL.filter(function(i){return i.g.indexOf(activeGenre)!==-1});
+  var app=document.getElementById('app');
+  var html='';
+  html+='<div class="section" id="sec-new"><div class="section-header"><div class="section-title">Новинки</div><a class="section-link" href="#">Все <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></div><div class="section-scroll">';
+  ALL.slice(0,10).forEach(function(i){html+=renderCard(i)});
+  html+='</div></div>';
+  html+='<div class="section" id="sec-films"><div class="section-header"><div class="section-title">Фильмы</div><a class="section-link" href="#">Все <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></div><div class="section-scroll">';
+  films.forEach(function(i){html+=renderCard(i)});
+  html+='</div></div>';
+  html+='<div class="section" id="sec-series"><div class="section-header"><div class="section-title">Сериалы</div><a class="section-link" href="#">Все <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></div><div class="section-scroll">';
+  series.forEach(function(i){html+=renderCard(i)});
+  html+='</div></div>';
+  if(activeGenre!=='Все'){
+    html+='<div class="section" id="sec-filtered"><div class="section-header"><div class="section-title">'+activeGenre+'</div></div><div class="section-scroll">';
+    filtered.forEach(function(i){html+=renderCard(i)});
+    html+='</div></div>';
+  }
+  html+='<div class="section" id="sec-collections"><div class="section-header"><div class="section-title">Популярное</div><a class="section-link" href="#">Все <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></div><div class="section-scroll">';
+  ALL.slice(0,8).reverse().forEach(function(i){html+=renderCard(i)});
+  html+='</div></div>';
+  app.innerHTML=html;
+}
+
+function renderGenres(){
+  var row=document.getElementById('genreRow');
+  row.innerHTML=GENRES.map(function(g){
+    return '<button class="genre-chip'+(g===activeGenre?' active':'')+'" tabindex="0" onclick="filterGenre(\''+g+'\')">'+g+'</button>';
+  }).join('');
+}
+
+function filterGenre(g){
+  activeGenre=g;
+  renderGenres();
+  renderSections();
+}
+
+function toggleFav(id,btn){
+  if(FAVS[id]){delete FAVS[id];btn.classList.remove('active');btn.querySelector('svg').setAttribute('fill','none')}
+  else{FAVS[id]=true;btn.classList.add('active');btn.querySelector('svg').setAttribute('fill','currentColor')}
+  var c=Object.keys(FAVS).length;
+  var b=document.getElementById('fav-count');
+  b.textContent=c;b.style.display=c>0?'flex':'none';
+}
+
+function openSearch(){document.getElementById('searchOverlay').classList.add('open');document.getElementById('searchInput').focus()}
+function closeSearch(e){if(e&&e.target!==e.currentTarget)return;document.getElementById('searchOverlay').classList.remove('open');document.getElementById('searchInput').value='';document.getElementById('searchResults').innerHTML=''}
+function doSearch(q){
+  var el=document.getElementById('searchResults');
+  if(!q.trim()){el.innerHTML='';return}
+  var lq=q.toLowerCase();
+  var found=ALL.filter(function(i){return i.t.toLowerCase().indexOf(lq)!==-1||i.r.toLowerCase().indexOf(lq)!==-1||i.g.join(' ').toLowerCase().indexOf(lq)!==-1});
+  if(!found.length){el.innerHTML='<div class="search-empty">Ничего не найдено</div>';return}
+  el.innerHTML=found.map(function(i){
+    var hue=(i.id*37)%360;
+    return '<div class="search-result-item" onclick="closeSearch();openModal('+i.id+')">'+
+      '<img src="'+posterUrl(i,'w92')+'" alt="" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">'+
+      '<div style="display:none;width:36px;height:52px;border-radius:6px;background:linear-gradient(135deg,hsl('+hue+',40%,18%),hsl('+(hue+30)+',35%,12%));align-items:center;justify-content:center;font-size:8px;font-weight:700;color:rgba(255,255,255,.5);flex-shrink:0">'+i.r.charAt(0)+'</div>'+
+      '<div class="search-result-info"><h4>'+i.r+'</h4><span>'+i.y+' · '+i.g.join(', ')+'</span></div></div>';
+  }).join('');
+}
+
+function openModal(id){
+  var item=ALL.find(function(i){return i.id===id});
+  if(!item)return;
+  var mc=document.getElementById('modalContainer');
+  var isFav=FAVS[item.id];
+  var hasEps=item.episodes&&item.episodes.length;
+  var epHtml='';
+  if(item.tp==='s'){
+    epHtml='<div class="modal-subtitle">Серии</div><div class="modal-ep-list">';
+    if(hasEps){
+      item.episodes.forEach(function(e,i){
+        epHtml+='<div class="modal-ep" tabindex="0" onclick="playVideo(\''+e.vid.replace(/'/g,"\\'")+'\')"><span class="modal-ep-num">'+e.n+'</span><span class="modal-ep-title">'+e.t+'</span><span class="modal-ep-time">'+e.time+'</span><svg width="14" height="14" viewBox="0 0 24 24" fill="var(--accent)"><path d="M8 5v14l11-7z"/></svg></div>';
+      });
+    }else{
+      var defEps=['Эпизод 1','Эпизод 2','Эпизод 3','Эпизод 4','Эпизод 5','Эпизод 6','Эпизод 7','Эпизод 8'];
+      var defTimes=['44 мин','42 мин','48 мин','45 мин','50 мин','47 мин','46 мин','52 мин'];
+      defEps.forEach(function(e,i){
+        epHtml+='<div class="modal-ep" tabindex="0"><span class="modal-ep-num">'+(i+1)+'</span><span class="modal-ep-title">'+e+'</span><span class="modal-ep-time">'+defTimes[i]+'</span></div>';
+      });
+    }
+    epHtml+='</div>';
+  }
+  var vidHtml='';
+  var vidSrc='', vidLabel='';
+  if(hasEps){
+    vidSrc=item.episodes[0].vid;
+    vidLabel='Серия '+item.episodes[0].n+': '+item.episodes[0].t;
+  }else if(item.vid){
+    vidSrc=item.vid;
+    vidLabel='Файл: '+item.vid.split('/').pop();
+  }
+  if(vidSrc){
+    var subPath=vidSrc.replace(/\.mp4$/,'');
+    vidHtml='<div class="modal-player">'+
+      '<video id="vjs-player" class="video-js vjs-big-play-centered vjs-theme-city" controls preload="metadata" poster="'+posterUrl(item,'w780')+'" data-setup=\'{"fluid":true,"responsive":true}\'>'+
+        '<source src="'+vidSrc+'" type="video/mp4">'+
+        '<track kind="subtitles" label="Русские субтитры" srclang="ru" src="'+subPath+'_ru.vtt" >'+
+        '<track kind="subtitles" label="English subtitles" srclang="en" src="'+subPath+'_en.vtt" >'+
+        '<track kind="subtitles" label="English CC" srclang="en" src="'+subPath+'_cc.vtt" >'+
+        '<p class="vjs-no-js">Включите JavaScript для воспроизведения видео.</p>'+
+      '</video>'+
+      '<button class="player-settings-btn" id="psBtn" onclick="togglePlayerSettings(event)" title="Настройки плеера"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></button>'+
+      '<div class="player-settings" id="playerSettings">'+
+        '<div class="player-settings-head"><span>Настройки</span><button onclick="togglePlayerSettings()">&times;</button></div>'+
+        '<div class="ps-section">'+
+          '<div class="ps-label">Субтитры</div>'+
+          '<div class="ps-options" id="psSubs">'+
+            '<div class="ps-opt active" onclick="setSubtitles(false,this)"><div class="check"></div>Выкл</div>'+
+            '<div class="ps-opt" onclick="setSubtitles(\'ru\',this)"><div class="check"></div>Русские</div>'+
+            '<div class="ps-opt" onclick="setSubtitles(\'en\',this)"><div class="check"></div>English</div>'+
+            '<div class="ps-opt" onclick="setSubtitles(\'cc\',this)"><div class="check"></div>English CC</div>'+
+          '</div>'+
+        '</div>'+
+        '<div class="ps-section">'+
+          '<div class="ps-label">Озвучка</div>'+
+          '<div class="ps-options" id="psAudio">'+
+            '<div class="ps-opt active" onclick="setAudio(\'en\',this)"><div class="check"></div>English (оригинал)</div>'+
+            '<div class="ps-opt" onclick="setAudio(\'ru\',this)"><div class="check"></div>Русский дубляж</div>'+
+          '</div>'+
+        '</div>'+
+        '<div class="ps-section">'+
+          '<div class="ps-label">Скорость</div>'+
+          '<div class="ps-speed-row" id="psSpeed">'+
+            '<button class="ps-speed-btn" onclick="setSpeed(0.5,this)">0.5x</button>'+
+            '<button class="ps-speed-btn" onclick="setSpeed(0.75,this)">0.75x</button>'+
+            '<button class="ps-speed-btn active" onclick="setSpeed(1,this)">1x</button>'+
+            '<button class="ps-speed-btn" onclick="setSpeed(1.25,this)">1.25x</button>'+
+            '<button class="ps-speed-btn" onclick="setSpeed(1.5,this)">1.5x</button>'+
+            '<button class="ps-speed-btn" onclick="setSpeed(2,this)">2x</button>'+
+          '</div>'+
+        '</div>'+
+        '<div class="ps-info">Субтитры загружаются из файлов:<br>'+subPath+'_ru.vtt<br>'+subPath+'_en.vtt<br>'+subPath+'_cc.vtt<br><br>Аудиодорожки извлекаются из MKV и мультиплексируются в MP4 через ffmpeg.</div>'+
+      '</div>'+
+      '<div class="modal-player-info"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>'+vidLabel+' · Video.js Player</div>'+
+    '</div>';
+  }
+  mc.innerHTML=
+    '<div class="modal-backdrop">'+
+      '<img src="'+backdropUrl(item)+'" alt="'+item.r+'" onerror="this.style.background=\'linear-gradient(135deg,#1a1a2e,#16213e)\'">'+
+      '<div class="grad"></div>'+
+    '</div>'+
+    '<div class="modal-body">'+
+      vidHtml+
+      '<div class="modal-top">'+
+        '<div class="modal-poster"><img src="'+posterUrl(item,'w342')+'" alt="'+item.r+'" onerror="this.style.background=\'var(--bg3)\'"></div>'+
+        '<div class="modal-info">'+
+          '<h1>'+item.r+'</h1>'+
+          '<div class="subtitle">'+item.t+' · '+item.y+'</div>'+
+          '<div class="modal-ratings">'+
+            '<span class="r-item r-kp">КП '+item.kp+'</span>'+
+            '<span class="r-item r-im">IMDb '+item.im+'</span>'+
+            '<span class="r-item r-sl">★ '+item.sl+'</span>'+
+          '</div>'+
+          '<div class="modal-meta-row">'+
+            '<span class="modal-tag">'+item.y+'</span>'+
+            '<span class="modal-tag">'+(item.tp==='s'?'Сериал':'Фильм')+'</span>'+
+            item.g.map(function(g){return '<span class="modal-tag">'+g+'</span>'}).join('')+
+            '<span class="modal-tag q-'+item.q+'">'+item.q.toUpperCase()+'</span>'+
+            (item.ep?'<span class="modal-tag">'+item.ep+'</span>':'')+
+          '</div>'+
+          '<div class="modal-actions">'+
+            '<button class="modal-btn primary" onclick="'+(hasEps?'playVideo(\''+item.episodes[0].vid.replace(/'/g,"\\'")+'\')':(item.vid?'playVideo(\''+item.vid.replace(/'/g,"\\'")+'\')':'alert("Видео скоро будет")'))+'"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>Смотреть</button>'+
+            '<button class="modal-btn secondary'+(isFav?' faved':'')+'" onclick="toggleFavModal('+item.id+',this)"><svg viewBox="0 0 24 24" fill="'+(isFav?'currentColor':'none')+'" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>Закладка</button>'+
+          '</div>'+
+          '<div class="modal-desc">'+item.d+'</div>'+
+          epHtml+
+        '</div>'+
+      '</div>'+
+    '</div>';
+  document.getElementById('movieModal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function playVideo(src){
+  if(!src)return;
+  var el=document.getElementById('vjs-player');
+  if(!el)return;
+  initVideoPlayer();
+  var player=videojs('vjs-player');
+  if(!player)return;
+  var oldSrc=player.currentSrc();
+  if(oldSrc!==src&&src.indexOf(oldSrc.split('/').pop())===-1){
+    player.src({type:'video/mp4',src:src});
+    var subPath=src.replace(/\.mp4$/,'');
+    var tracks=player.textTracks();
+    while(tracks.length>0) player.removeRemoteTextTrack(tracks[0]);
+    var subRu={src:subPath+'_ru.vtt',kind:'subtitles',srclang:'ru',label:'Русские субтитры'};
+    var subEn={src:subPath+'_en.vtt',kind:'subtitles',srclang:'en',label:'English subtitles'};
+    var subCc={src:subPath+'_cc.vtt',kind:'subtitles',srclang:'en',label:'English CC'};
+    player.addRemoteTextTrack(subRu,false);
+    player.addRemoteTextTrack(subEn,false);
+    player.addRemoteTextTrack(subCc,false);
+  }
+  player.play();
+  el.scrollIntoView({behavior:'smooth',block:'center'});
+  var info=document.querySelector('.modal-player-info');
+  if(info){
+    var fname=src.split('/').pop();
+    info.innerHTML='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>'+fname+' · Video.js Player';
+  }
+  var ps=document.getElementById('playerSettings');
+  if(ps)ps.classList.remove('open');
+}
+function togglePlayerSettings(e){
+  if(e)e.stopPropagation();
+  var ps=document.getElementById('playerSettings');
+  if(ps)ps.classList.toggle('open');
+}
+function setSubtitles(lang,el){
+  var player=videojs('vjs-player');
+  if(!player)return;
+  var tracks=player.textTracks();
+  for(var i=0;i<tracks.length;i++){
+    if(tracks[i].kind==='subtitles'){
+      if(lang===false){
+        tracks[i].mode='disabled';
+      }else{
+        tracks[i].mode=(tracks[i].srclang===lang)?'showing':'disabled';
+      }
+    }
+  }
+  var opts=el.parentElement.querySelectorAll('.ps-opt');
+  for(var j=0;j<opts.length;j++)opts[j].classList.remove('active');
+  el.classList.add('active');
+}
+function setAudio(lang,el){
+  var player=videojs('vjs-player');
+  if(!player)return;
+  var aTracks=player.audioTracks();
+  if(aTracks&&aTracks.length){
+    for(var i=0;i<aTracks.length;i++){
+      aTracks[i].enabled=(aTracks[i].language===lang);
+    }
+  }
+  var opts=el.parentElement.querySelectorAll('.ps-opt');
+  for(var j=0;j<opts.length;j++)opts[j].classList.remove('active');
+  el.classList.add('active');
+}
+function setSpeed(rate,el){
+  var player=videojs('vjs-player');
+  if(!player)return;
+  player.playbackRate(rate);
+  var btns=el.parentElement.querySelectorAll('.ps-speed-btn');
+  for(var j=0;j<btns.length;j++)btns[j].classList.remove('active');
+  el.classList.add('active');
+}
+function closeModal(e){
+  if(e&&e.target!==e.currentTarget&&!e.target.classList.contains('modal-close'))return;
+  var el=document.getElementById('vjs-player');
+  if(el&&el.dataset.inited){
+    var p=videojs('vjs-player');
+    if(p){p.pause();p.dispose();el.removeAttribute('data-inited')}
+  }
+  document.getElementById('movieModal').classList.remove('open');
+  document.body.style.overflow='';
+}
+function toggleFavModal(id,btn){
+  if(FAVS[id]){delete FAVS[id];btn.classList.remove('faved');btn.querySelector('svg').setAttribute('fill','none')}
+  else{FAVS[id]=true;btn.classList.add('faved');btn.querySelector('svg').setAttribute('fill','currentColor')}
+  var c=Object.keys(FAVS).length;
+  var b=document.getElementById('fav-count');
+  b.textContent=c;b.style.display=c>0?'flex':'none';
+}
+function scrollToSection(id){var e=document.getElementById('sec-'+id);if(e)e.scrollIntoView({behavior:'smooth',block:'start'})}
+function openMobileMenu(){document.getElementById('mobileMenu').classList.add('open')}
+function closeMobileMenu(){document.getElementById('mobileMenu').classList.remove('open')}
+
+document.addEventListener('keydown',function(e){
+  if(e.key==='/'&&!document.getElementById('searchOverlay').classList.contains('open')){e.preventDefault();openSearch()}
+  if(e.key==='Escape'){closeSearch();closeMobileMenu();closeModal()}
+});
+
+renderHero();
+renderGenres();
+renderSections();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/video.js@8.21.0/dist/video.min.js"></script>
+<script>
+function initVideoPlayer(){
+  var el=document.getElementById('vjs-player');
+  if(!el||el.dataset.inited) return;
+  el.dataset.inited='1';
+  videojs('vjs-player',{
+    controls:true,
+    preload:'metadata',
+    playbackRates:[0.5,0.75,1,1.25,1.5,2],
+    controlBar:{volumePanel:{inline:true},pictureInPictureToggle:true},
+    fluid:true,
+    responsive:true
+  });
+}
+
+document.addEventListener('click',function(e){
+  var ps=document.getElementById('playerSettings');
+  var btn=document.getElementById('psBtn');
+  if(ps&&ps.classList.contains('open')&&!ps.contains(e.target)&&e.target!==btn&&!btn.contains(e.target)){
+    ps.classList.remove('open');
+  }
+});
+
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('sw.js').catch(function(){});
+}
+
+(function(){
+  var focusableSelector='.card,.hero-cta,.nav a,.genre-chip,.modal-btn,.icon-btn,.auth-btn,.mobile-bar-item,.hero-arrow,.modal-ep,.search-result-item';
+  function getFocusables(){return Array.prototype.slice.call(document.querySelectorAll(focusableSelector)).filter(function(el){return el.offsetParent!==null})}
+  function focusEl(el){if(el){el.focus();el.scrollIntoView({behavior:'smooth',block:'center'})}}
+  var focusRing=document.createElement('div');
+  focusRing.style.cssText='position:fixed;pointer-events:none;z-index:9999;border:2px solid #6366f1;border-radius:10px;box-shadow:0 0 12px rgba(99,102,241,.5);transition:all .15s ease;display:none';
+  document.body.appendChild(focusRing);
+  function updateRing(){
+    var el=document.activeElement;
+    if(!el||el===document.body||el===document.documentElement){focusRing.style.display='none';return}
+    var r=el.getBoundingClientRect();
+    focusRing.style.display='block';
+    focusRing.style.left=(r.left-3)+'px';
+    focusRing.style.top=(r.top-3)+'px';
+    focusRing.style.width=(r.width+6)+'px';
+    focusRing.style.height=(r.height+6)+'px';
+  }
+  document.addEventListener('focusin',function(){setTimeout(updateRing,10)});
+  document.addEventListener('focusout',function(){setTimeout(updateRing,10)});
+  window.addEventListener('scroll',updateRing);
+  window.addEventListener('resize',updateRing);
+
+  document.addEventListener('keydown',function(e){
+    var key=e.key;
+    if(key==='ArrowUp'||key==='ArrowDown'||key==='ArrowLeft'||key==='ArrowRight'){
+      var items=getFocusables();
+      if(!items.length)return;
+      var cur=document.activeElement;
+      var idx=items.indexOf(cur);
+      if(key==='ArrowRight'||key==='ArrowDown'){
+        e.preventDefault();
+        focusEl(items[idx<items.length-1?idx+1:0]);
+      }else{
+        e.preventDefault();
+        focusEl(items[idx>0?idx-1:items.length-1]);
+      }
+    }
+    if(key==='Enter'||key===' '){
+      var el=document.activeElement;
+      if(el&&(el.classList.contains('card')||el.classList.contains('modal-ep'))){
+        e.preventDefault();el.click();
+      }
+    }
+    if(key==='Escape'){
+      var modal=document.getElementById('movieModal');
+      if(modal&&modal.classList.contains('open')){closeModal();e.preventDefault()}
+    }
+    if(key==='MediaPlayPause'){var v=document.querySelector('video');if(v)v.paused?v.play():v.pause()}
+    if(key==='MediaTrackNext'){slideHero(1)}
+    if(key==='MediaTrackPrevious'){slideHero(-1)}
+  });
+
+  document.addEventListener('keydown',function(e){
+    if(e.key==='ArrowUp'||e.key==='ArrowDown'){
+      if(!document.activeElement||document.activeElement===document.body){
+        e.preventDefault();
+        var items=getFocusables();
+        if(items.length)focusEl(items[0]);
+      }
+    }
+  });
+})();
+</script>
+</body>
+</html>

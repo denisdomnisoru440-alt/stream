@@ -1,0 +1,7 @@
+videos/*.mp4
+videos/*.vtt
+videos/*.srt
+videos/temp_*
+convert_all.ps1
+extracted_text.txt
+family_guy_s21e01.mp4

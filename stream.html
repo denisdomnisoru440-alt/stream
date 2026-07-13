@@ -617,7 +617,7 @@ function renderCard(item){
   return '<article class="card" tabindex="0" onclick="openModal('+item.id+')" onkeydown="if(event.key===\'Enter\')openModal('+item.id+')">'+
     '<div class="card-poster">'+
       '<img class="loading" src="'+posterUrl(item,'w342')+'" alt="'+item.r+'" loading="lazy" onload="this.classList.remove(\'loading\');this.classList.add(\'loaded\')" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">'+
-      '<div style="display:none;width:100%;height:100%;position:absolute;inset:0;background:linear-gradient(135deg,hsl('+hue+',40%,18%),hsl('+(hue+30)+',35%,12%));align-items:center;justify-content:center;font-size:13px;font-weight:700;color:rgba(255,255,255,.5);text-align:center;padding:12px">'+item.r+'</div>'+
+      '<div style="display:none;width:100%;height:100%;position:absolute;inset:0;background:linear-gradient(135deg,hsl('+hue+',40%,18%),hsl('+(hue+30)+',35%,12%));align-items:center;justify-content:center;font-size:13px;font-weight:700;color:rgba(255,255,255,.5);text-align:center;padding:12px;border-radius:inherit"><svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="1.5" style="width:48px;height:48px;margin-bottom:8px"><rect x="2" y="2" width="20" height="20" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><div>'+item.r+'</div></div>'+
       '<div class="grad"></div>'+
       '<div class="hover-info"><p>'+item.d+'</p></div>'+
       '<div class="play-circle"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>'+
@@ -641,7 +641,7 @@ function renderHero(){
   var h='',d='';
   items.forEach(function(it,i){
     h+='<div class="hero-slide'+(i===0?' active':'')+'">'+
-      '<img class="loading" src="'+backdropUrl(it)+'" alt="'+it.r+'" onload="this.classList.remove(\'loading\');this.classList.add(\'loaded\')" onerror="this.style.background=\'linear-gradient(135deg,#1a1a2e,#16213e)\';this.classList.remove(\'loading\');this.classList.add(\'loaded\')">'+
+      '<img class="loading" src="'+backdropUrl(it)+'" alt="'+it.r+'" onload="this.classList.remove(\'loading\');this.classList.add(\'loaded\')" onerror="this.style.background=\'linear-gradient(135deg,hsl('+((it.id*37)%360)+',40%,14%),hsl('+(((it.id*37)%360)+30)+',35%,10%))\';this.classList.remove(\'loading\');this.classList.add(\'loaded\')">'+
       '<div class="grad"></div>'+
       '<div class="grad-bottom"></div>'+
       '<div class="info">'+
@@ -807,7 +807,7 @@ function openModal(id){
   }
   mc.innerHTML=
     '<div class="modal-backdrop">'+
-      '<img src="'+backdropUrl(item)+'" alt="'+item.r+'" onerror="this.style.background=\'linear-gradient(135deg,#1a1a2e,#16213e)\'">'+
+      '<img src="'+backdropUrl(item)+'" alt="'+item.r+'" onerror="this.style.background=\'linear-gradient(135deg,hsl('+((item.id*37)%360)+',40%,14%),hsl('+(((item.id*37)%360)+30)+',35%,10%))\';this.style.minHeight=\'200px\'">'+
       '<div class="grad"></div>'+
     '</div>'+
     '<div class="modal-body">'+

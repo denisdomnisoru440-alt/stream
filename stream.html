@@ -138,10 +138,10 @@ input{border:none;outline:none;font-family:inherit}
 .section-scroll::-webkit-scrollbar{display:none}
 
 /* ===================== CARDS ===================== */
-.card{min-width:180px;max-width:180px;scroll-snap-align:start;position:relative;border-radius:var(--radius-lg);overflow:hidden;background:transparent;transition:transform .3s var(--transition),box-shadow .3s var(--transition);flex-shrink:0;cursor:pointer}
-.card:hover{transform:translateY(-8px) scale(1.02);box-shadow:0 12px 40px rgba(14,165,233,.15)}
-.card-poster{position:relative;aspect-ratio:2/3;overflow:hidden;border-radius:var(--radius-lg);background:var(--bg3);box-shadow:0 4px 20px rgba(0,0,0,.4)}
-.card-poster img{width:100%;height:100%;object-fit:cover;transition:transform .5s var(--transition);filter:brightness(.92)}
+.card{min-width:260px;max-width:260px;scroll-snap-align:start;position:relative;border-radius:var(--radius-lg);overflow:hidden;background:transparent;transition:transform .3s var(--transition),box-shadow .3s var(--transition);flex-shrink:0;cursor:pointer}
+.card:hover{transform:translateY(-6px);box-shadow:0 12px 40px rgba(14,165,233,.15)}
+.card-poster{position:relative;aspect-ratio:16/9;overflow:hidden;border-radius:var(--radius-lg);background:var(--bg3);box-shadow:0 4px 20px rgba(0,0,0,.4)}
+.card-poster img{width:100%;height:100%;object-fit:contain;transition:transform .5s var(--transition);filter:brightness(.92)}
 .card:hover .card-poster img{transform:scale(1.06);filter:brightness(1)}
 .card-poster .grad{position:absolute;inset:0;background:linear-gradient(0deg,rgba(6,9,15,.9) 0%,rgba(6,9,15,.2) 40%,transparent 65%);opacity:0;transition:opacity .3s}
 .card:hover .card-poster .grad{opacity:1}
@@ -450,11 +450,49 @@ input{border:none;outline:none;font-family:inherit}
 .anim-d2{animation-delay:.1s}
 .anim-d3{animation-delay:.15s}
 
-*:focus{outline:none}
+/* ===================== CAST / CHARACTERS ===================== */
+.cast-section{max-width:1360px;margin:0 auto 40px;padding:0 32px}
+.cast-section .section-title{margin-bottom:18px}
+.cast-row{display:flex;gap:16px;overflow-x:auto;padding-bottom:8px;scroll-snap-type:x mandatory}
+.cast-row::-webkit-scrollbar{display:none}
+.cast-card{min-width:120px;max-width:120px;scroll-snap-align:start;display:flex;flex-direction:column;align-items:center;gap:10px;padding:20px 10px;border-radius:var(--radius-lg);background:rgba(255,255,255,.02);border:1px solid var(--border);transition:all .3s var(--transition);cursor:pointer;flex-shrink:0;position:relative;overflow:hidden}
+.cast-card::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,var(--cast-glow,rgba(14,165,233,.08)) 0%,transparent 70%);opacity:0;transition:opacity .3s}
+.cast-card:hover{transform:translateY(-6px);border-color:rgba(14,165,233,.2);box-shadow:0 8px 32px rgba(0,0,0,.3),0 0 24px var(--cast-glow,rgba(14,165,233,.1))}
+.cast-card:hover::before{opacity:1}
+.cast-avatar{width:72px;height:72px;border-radius:50%;overflow:hidden;border:2px solid rgba(255,255,255,.1);transition:all .3s var(--transition);position:relative;z-index:1;box-shadow:0 4px 16px rgba(0,0,0,.3)}
+.cast-card:hover .cast-avatar{border-color:var(--accent);box-shadow:0 0 20px var(--accent-glow)}
+.cast-avatar img{width:100%;height:100%;object-fit:cover}
+.cast-name{font-size:11px;font-weight:600;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;position:relative;z-index:1}
+.cast-role{font-size:9px;color:var(--text3);text-align:center;position:relative;z-index:1}
+
+/* ===================== CAST IN MODAL ===================== */
+.modal-cast{margin-top:20px;padding-top:20px;border-top:1px solid var(--border)}
+.modal-cast-title{font-size:15px;font-weight:600;margin-bottom:14px;color:var(--text)}
+.modal-cast-row{display:flex;gap:12px;overflow-x:auto;padding-bottom:4px}
+.modal-cast-row::-webkit-scrollbar{display:none}
+.modal-cast-item{min-width:90px;max-width:90px;display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 8px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid var(--border);transition:all .2s;cursor:pointer;flex-shrink:0}
+.modal-cast-item:hover{background:rgba(14,165,233,.06);border-color:rgba(14,165,233,.15);transform:translateY(-3px)}
+.modal-cast-avatar{width:56px;height:56px;border-radius:50%;overflow:hidden;border:2px solid rgba(255,255,255,.08);transition:border-color .2s}
+.modal-cast-item:hover .modal-cast-avatar{border-color:var(--accent)}
+.modal-cast-avatar img{width:100%;height:100%;object-fit:cover}
+.modal-cast-name{font-size:10px;font-weight:600;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.modal-cast-role{font-size:8px;color:var(--text3);text-align:center}
+
+@media(max-width:768px){
+  .cast-section{padding:0 12px;margin-bottom:24px}
+  .cast-card{min-width:100px;max-width:100px;padding:14px 6px;gap:8px}
+  .cast-avatar{width:58px;height:58px}
+  .cast-name{font-size:10px}
+  .cast-role{font-size:8px}
+  .modal-cast-item{min-width:76px;max-width:76px;padding:10px 6px;gap:6px}
+  .modal-cast-avatar{width:46px;height:46px}
+  .modal-cast-name{font-size:9px}
+  .modal-cast-role{font-size:7px}
+}
+
+*:focus{outline:none;box-shadow:none!important}
 @media(hover:none)and(pointer:coarse){
   .card,.genre-chip,.modal-btn,.hero-cta,.nav a,.mobile-bar-item,.icon-btn,.auth-btn,.modal-ep{outline:none}
-  .card:focus,.genre-chip:focus,.modal-btn:focus,.hero-cta:focus,.nav a:focus,.mobile-bar-item:focus,.icon-btn:focus,.auth-btn:focus,.modal-ep:focus{box-shadow:0 0 0 2px var(--accent);transform:scale(1.03)}
-  .card:focus .card-poster img{transform:scale(1.06);filter:brightness(1)}
 }
 @media screen and (min-width:1024px)and (max-height:800px){
   .hero-slide{aspect-ratio:3/1}
@@ -592,7 +630,7 @@ input{border:none;outline:none;font-family:inherit}
 <script>
 var T="https://image.tmdb.org/t/p";
 var ALL=[
-  {id:1,t:"Family Guy",r:"Гриффины",y:1999,tp:"s",g:["Комедия","Мультфильм"],d:"Питер Гриффин — нерадивый отец семейства, который вместе со своей странной семьёй проживает в городке Куахог. Мультситком для взрослых.",kp:8.2,im:8.1,sl:8.9,ep:"S21E01 Oscars Guy",q:"hd",p:"fg_poster.svg",b:"fg_backdrop.svg",episodes:[{n:"S21E01",t:"Oscars Guy",time:"22 мин",vid:"https://raw.githubusercontent.com/denisdomnisoru440-alt/stream/main/Family.Guy.S21E01.Oscars.Guy.mp4"}]},
+  {id:1,t:"Family Guy",r:"Гриффины",y:1999,tp:"s",g:["Комедия","Мультфильм"],d:"Питер Гриффин — нерадивый отец семейства, который вместе со своей странной семьёй проживает в городке Куахог. Мультситком для взрослых.",kp:8.2,im:8.1,sl:8.9,ep:"S21E01 Oscars Guy",q:"hd",p:"family-guy-5k-tv-5120x2880-15636.jpg",b:"family-guy-5k-tv-5120x2880-15636.jpg",episodes:[{n:"S21E01",t:"Oscars Guy",time:"22 мин",vid:"https://raw.githubusercontent.com/denisdomnisoru440-alt/stream/main/Family.Guy.S21E01.Oscars.Guy.mp4"}],cast:[{name:"Питер Гриффин",role:"Отец",avatar:"avatar_peter.svg",color:"#2d1b69"},{name:"Лоис Гриффин",role:"Мать",avatar:"avatar_lois.svg",color:"#6b1d3a"},{name:"Мег Гриффин",role:"Дочь",avatar:"avatar_meg.svg",color:"#4a1942"},{name:"Крис Гриффин",role:"Сын",avatar:"avatar_chris.svg",color:"#1b4332"},{name:"Стьюи Гриффин",role:"Малыш",avatar:"avatar_stewie.svg",color:"#8b0000"},{name:"Брайан",role:"Пёс",avatar:"avatar_brian.svg",color:"#1a3a5c"}]},
 ];
 
 var GENRES=["Все","Драма","Триллер","Фантастика","Комедия","Боевик","Детектив","Исторический","Мелодрама","Документальный","Приключения","Семейный","Ужасы","Мультфильм"];
@@ -834,7 +872,7 @@ function openModal(id){
             '<button class="modal-btn secondary'+(isFav?' faved':'')+'" onclick="toggleFavModal('+item.id+',this)"><svg viewBox="0 0 24 24" fill="'+(isFav?'currentColor':'none')+'" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>Закладка</button>'+
           '</div>'+
           '<div class="modal-desc">'+item.d+'</div>'+
-          epHtml+
+          epHtml++
         '</div>'+
       '</div>'+
     '</div>';
@@ -968,68 +1006,33 @@ if('serviceWorker' in navigator){
   navigator.serviceWorker.register('sw.js').catch(function(){});
 }
 
-(function(){
-  var focusableSelector='.card,.hero-cta,.nav a,.genre-chip,.modal-btn,.icon-btn,.auth-btn,.mobile-bar-item,.hero-arrow,.modal-ep,.search-result-item';
-  function getFocusables(){return Array.prototype.slice.call(document.querySelectorAll(focusableSelector)).filter(function(el){return el.offsetParent!==null})}
-  function focusEl(el){if(el){el.focus();el.scrollIntoView({behavior:'smooth',block:'center'})}}
-  var focusRing=document.createElement('div');
-  focusRing.style.cssText='position:fixed;pointer-events:none;z-index:9999;border:2px solid #0ea5e9;border-radius:12px;box-shadow:0 0 16px rgba(14,165,233,.5);transition:all .15s ease;display:none';
-  document.body.appendChild(focusRing);
-  function updateRing(){
-    var el=document.activeElement;
-    if(!el||el===document.body||el===document.documentElement){focusRing.style.display='none';return}
-    var r=el.getBoundingClientRect();
-    focusRing.style.display='block';
-    focusRing.style.left=(r.left-3)+'px';
-    focusRing.style.top=(r.top-3)+'px';
-    focusRing.style.width=(r.width+6)+'px';
-    focusRing.style.height=(r.height+6)+'px';
+document.addEventListener('keydown',function(e){
+  if(e.key==='MediaPlayPause'){var v=document.querySelector('video');if(v)v.paused?v.play():v.pause()}
+  if(e.key==='MediaTrackNext')slideHero(1);
+  if(e.key==='MediaTrackPrevious')slideHero(-1);
+  var sel='.card,.hero-cta,.nav a,.genre-chip,.modal-btn,.icon-btn,.auth-btn,.mobile-bar-item,.hero-arrow,.modal-ep,.search-result-item';
+  var items=Array.prototype.slice.call(document.querySelectorAll(sel)).filter(function(el){return el.offsetParent!==null});
+  if(!items.length)return;
+  var key=e.key;
+  if(key==='ArrowRight'||key==='ArrowDown'){
+    e.preventDefault();
+    var idx=items.indexOf(document.activeElement);
+    var next=idx<items.length-1?idx+1:0;
+    items[next].focus();items[next].scrollIntoView({behavior:'smooth',block:'center'});
   }
-  document.addEventListener('focusin',function(){setTimeout(updateRing,10)});
-  document.addEventListener('focusout',function(){setTimeout(updateRing,10)});
-  window.addEventListener('scroll',updateRing);
-  window.addEventListener('resize',updateRing);
-
-  document.addEventListener('keydown',function(e){
-    var key=e.key;
-    if(key==='ArrowUp'||key==='ArrowDown'||key==='ArrowLeft'||key==='ArrowRight'){
-      var items=getFocusables();
-      if(!items.length)return;
-      var cur=document.activeElement;
-      var idx=items.indexOf(cur);
-      if(key==='ArrowRight'||key==='ArrowDown'){
-        e.preventDefault();
-        focusEl(items[idx<items.length-1?idx+1:0]);
-      }else{
-        e.preventDefault();
-        focusEl(items[idx>0?idx-1:items.length-1]);
-      }
+  if(key==='ArrowLeft'||key==='ArrowUp'){
+    e.preventDefault();
+    var idx2=items.indexOf(document.activeElement);
+    var prev=idx2>0?idx2-1:items.length-1;
+    items[prev].focus();items[prev].scrollIntoView({behavior:'smooth',block:'center'});
+  }
+  if(key==='Enter'||key===' '){
+    var el2=document.activeElement;
+    if(el2&&(el2.classList.contains('card')||el2.classList.contains('modal-ep'))){
+      e.preventDefault();el2.click();
     }
-    if(key==='Enter'||key===' '){
-      var el=document.activeElement;
-      if(el&&(el.classList.contains('card')||el.classList.contains('modal-ep'))){
-        e.preventDefault();el.click();
-      }
-    }
-    if(key==='Escape'){
-      var modal=document.getElementById('movieModal');
-      if(modal&&modal.classList.contains('open')){closeModal();e.preventDefault()}
-    }
-    if(key==='MediaPlayPause'){var v=document.querySelector('video');if(v)v.paused?v.play():v.pause()}
-    if(key==='MediaTrackNext'){slideHero(1)}
-    if(key==='MediaTrackPrevious'){slideHero(-1)}
-  });
-
-  document.addEventListener('keydown',function(e){
-    if(e.key==='ArrowUp'||e.key==='ArrowDown'){
-      if(!document.activeElement||document.activeElement===document.body){
-        e.preventDefault();
-        var items=getFocusables();
-        if(items.length)focusEl(items[0]);
-      }
-    }
-  });
-})();
+  }
+});
 </script>
 </body>
 </html>

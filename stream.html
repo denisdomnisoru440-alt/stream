@@ -152,7 +152,7 @@ input{border:none;outline:none;font-family:inherit}
 .card:hover .card-poster .play-circle{opacity:1;transform:translate(-50%,-50%) scale(1)}
 .card-poster .play-circle svg{width:18px;height:18px;color:#fff;margin-left:2px}
 .card-logo{position:absolute;bottom:36px;left:0;right:0;z-index:3;display:flex;justify-content:center;pointer-events:none;padding:0 8px}
-.card-logo img{height:40px;width:auto;filter:drop-shadow(0 2px 8px rgba(0,0,0,.8));transition:all .3s var(--transition);opacity:1}
+.card-logo img{height:40px;width:40px;object-fit:cover;border-radius:50%;border:2px solid rgba(255,255,255,.15);filter:drop-shadow(0 2px 8px rgba(0,0,0,.8));transition:all .3s var(--transition);opacity:1}
 .card:hover .card-logo img{opacity:0;transform:translateY(-8px)}
 .card-logo span{font-size:13px;font-weight:900;color:#fff;text-transform:uppercase;letter-spacing:.06em;text-shadow:0 2px 8px rgba(0,0,0,.8),0 0 20px rgba(0,0,0,.5);text-align:center;line-height:1.2;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;transition:all .3s var(--transition);opacity:1}
 
@@ -254,7 +254,7 @@ input{border:none;outline:none;font-family:inherit}
   .section-scroll{padding:4px 12px 6px;gap:8px}
   .card{min-width:115px;max-width:115px}
   .card-poster{border-radius:8px}
-  .card-logo img{height:28px}
+  .card-logo img{height:32px;width:32px}
   .card-logo span{font-size:9px;letter-spacing:.03em}
   .card-body{padding:4px 2px 0}
   .card-title{font-size:10px;font-weight:600}
@@ -632,7 +632,7 @@ input{border:none;outline:none;font-family:inherit}
 <script>
 var T="https://image.tmdb.org/t/p";
 var ALL=[
-  {id:1,t:"Family Guy",r:"Гриффины",y:1999,tp:"s",g:["Комедия","Мультфильм"],d:"Питер Гриффин — нерадивый отец семейства, который вместе со своей странной семьёй проживает в городке Куахог. Мультситком для взрослых.",kp:8.2,im:8.1,sl:8.9,ep:"S21E01 Oscars Guy",q:"hd",p:"fg_poster.svg",b:"family-guy-5k-tv-5120x2880-15636.jpg",episodes:[{n:"S21E01",t:"Oscars Guy",time:"22 мин",vid:"https://raw.githubusercontent.com/denisdomnisoru440-alt/stream/main/Family.Guy.S21E01.Oscars.Guy.mp4"}],cast:[{name:"Питер Гриффин",role:"Отец",avatar:"avatar_peter.svg",color:"#2d1b69"},{name:"Лоис Гриффин",role:"Мать",avatar:"avatar_lois.svg",color:"#6b1d3a"},{name:"Мег Гриффин",role:"Дочь",avatar:"avatar_meg.svg",color:"#4a1942"},{name:"Крис Гриффин",role:"Сын",avatar:"avatar_chris.svg",color:"#1b4332"},{name:"Стьюи Гриффин",role:"Малыш",avatar:"avatar_stewie.svg",color:"#8b0000"},{name:"Брайан",role:"Пёс",avatar:"avatar_brian.svg",color:"#1a3a5c"}]},
+  {id:1,t:"Family Guy",r:"Гриффины",y:1999,tp:"s",g:["Комедия","Мультфильм"],d:"Питер Гриффин — нерадивый отец семейства, который вместе со своей странной семьёй проживает в городке Куахог. Мультситком для взрослых.",kp:8.2,im:8.1,sl:8.9,ep:"S21E01 Oscars Guy",q:"hd",p:"fg_poster.svg",b:"family-guy-5k-tv-5120x2880-15636.jpg",logo:"griffins_avatar.svg",episodes:[{n:"S21E01",t:"Oscars Guy",time:"22 мин",vid:"https://raw.githubusercontent.com/denisdomnisoru440-alt/stream/main/Family.Guy.S21E01.Oscars.Guy.mp4"}],cast:[{name:"Питер Гриффин",role:"Отец",avatar:"avatar_peter.svg",color:"#2d1b69"},{name:"Лоис Гриффин",role:"Мать",avatar:"avatar_lois.svg",color:"#6b1d3a"},{name:"Мег Гриффин",role:"Дочь",avatar:"avatar_meg.svg",color:"#4a1942"},{name:"Крис Гриффин",role:"Сын",avatar:"avatar_chris.svg",color:"#1b4332"},{name:"Стьюи Гриффин",role:"Малыш",avatar:"avatar_stewie.svg",color:"#8b0000"},{name:"Брайан",role:"Пёс",avatar:"avatar_brian.svg",color:"#1a3a5c"}]},
 ];
 
 var GENRES=["Все","Драма","Триллер","Фантастика","Комедия","Боевик","Детектив","Исторический","Мелодрама","Документальный","Приключения","Семейный","Ужасы","Мультфильм"];
@@ -661,7 +661,7 @@ function renderCard(item){
       '<div class="grad"></div>'+
       '<div class="hover-info"><p>'+item.d+'</p></div>'+
       '<div class="play-circle"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>'+
-      '<div class="card-logo"><img src="'+posterUrl(item,'w92')+'" alt="'+item.t+'"></div>'+
+      '<div class="card-logo"><img src="'+(item.logo||posterUrl(item,'w92'))+'" alt="'+item.t+'"></div>'+
       '<span class="card-badge '+item.q+'">'+item.q.toUpperCase()+'</span>'+
       '<button class="card-fav'+(FAVS[item.id]?' active':'')+'" onclick="event.stopPropagation();toggleFav('+item.id+',this)"><svg viewBox="0 0 24 24" fill="'+(FAVS[item.id]?'currentColor':'none')+'" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>'+
       (item.ep?'<div class="card-episode '+ec+'">'+item.ep+'</div>':'')+

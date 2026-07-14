@@ -152,8 +152,9 @@ input{border:none;outline:none;font-family:inherit}
 .card:hover .card-poster .play-circle{opacity:1;transform:translate(-50%,-50%) scale(1)}
 .card-poster .play-circle svg{width:18px;height:18px;color:#fff;margin-left:2px}
 .card-logo{position:absolute;bottom:36px;left:0;right:0;z-index:3;display:flex;justify-content:center;pointer-events:none;padding:0 8px}
+.card-logo img{height:40px;width:auto;filter:drop-shadow(0 2px 8px rgba(0,0,0,.8));transition:all .3s var(--transition);opacity:1}
+.card:hover .card-logo img{opacity:0;transform:translateY(-8px)}
 .card-logo span{font-size:13px;font-weight:900;color:#fff;text-transform:uppercase;letter-spacing:.06em;text-shadow:0 2px 8px rgba(0,0,0,.8),0 0 20px rgba(0,0,0,.5);text-align:center;line-height:1.2;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;transition:all .3s var(--transition);opacity:1}
-.card:hover .card-logo span{opacity:0;transform:translateY(-8px)}
 
 .card-badge{position:absolute;top:8px;left:8px;padding:2px 7px;border-radius:4px;font-size:9px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;z-index:3;backdrop-filter:blur(8px)}
 .card-badge.hd{background:rgba(14,165,233,.85);color:#fff}
@@ -253,6 +254,7 @@ input{border:none;outline:none;font-family:inherit}
   .section-scroll{padding:4px 12px 6px;gap:8px}
   .card{min-width:115px;max-width:115px}
   .card-poster{border-radius:8px}
+  .card-logo img{height:28px}
   .card-logo span{font-size:9px;letter-spacing:.03em}
   .card-body{padding:4px 2px 0}
   .card-title{font-size:10px;font-weight:600}
@@ -659,7 +661,7 @@ function renderCard(item){
       '<div class="grad"></div>'+
       '<div class="hover-info"><p>'+item.d+'</p></div>'+
       '<div class="play-circle"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>'+
-      '<div class="card-logo"><span>'+item.t+'</span></div>'+
+      '<div class="card-logo"><img src="'+posterUrl(item,'w92')+'" alt="'+item.t+'"></div>'+
       '<span class="card-badge '+item.q+'">'+item.q.toUpperCase()+'</span>'+
       '<button class="card-fav'+(FAVS[item.id]?' active':'')+'" onclick="event.stopPropagation();toggleFav('+item.id+',this)"><svg viewBox="0 0 24 24" fill="'+(FAVS[item.id]?'currentColor':'none')+'" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>'+
       (item.ep?'<div class="card-episode '+ec+'">'+item.ep+'</div>':'')+

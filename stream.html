@@ -821,7 +821,6 @@ function openModal(id){
         '<track kind="subtitles" label="English CC" srclang="en" src="'+subPath+'_cc.vtt" >'+
         '<p class="vjs-no-js">Включите JavaScript для воспроизведения видео.</p>'+
       '</video>'+
-      (hasEps?'<div class="ep-bar" id="epBar">'+item.episodes.map(function(e,i){return '<button class="ep-bar-btn'+(i===0?' active':'')+'" onclick="playEp('+item.id+','+i+',this)">'+e.n+' '+e.t+'</button>'}).join('')+'</div>':'')+
       '<div class="sub-bar" id="subBar">'+
         '<span class="sub-bar-label">Субтитры</span>'+
         '<button class="sub-bar-btn active" onclick="setSubtitles(false,this)">Выкл</button>'+
@@ -851,7 +850,8 @@ function openModal(id){
           '</div>'+
         '</div>'+
       '</div>'+
-    '</div>';
+    '</div>'+
+    (hasEps?'<div class="ep-bar" id="epBar">'+item.episodes.map(function(e,i){return '<button class="ep-bar-btn'+(i===0?' active':'')+'" onclick="playEp('+item.id+','+i+',this)">'+e.n+' '+e.t+'</button>'}).join('')+'</div>':'');
   }
   mc.innerHTML=
     '<div class="modal-backdrop">'+

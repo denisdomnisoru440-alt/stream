@@ -382,7 +382,7 @@ input{border:none;outline:none;font-family:inherit}
 }
 
 /* ===================== VIDEO PLAYER ===================== */
-.modal-player{margin-bottom:24px;border-radius:var(--radius-lg);overflow:hidden;background:#000;border:1px solid var(--border);box-shadow:0 8px 40px rgba(0,0,0,.4)}
+.modal-player{margin-bottom:24px;border-radius:var(--radius-lg);overflow:hidden;background:#000;border:1px solid var(--border);box-shadow:0 8px 40px rgba(0,0,0,.4);position:relative}
 .modal-player video{width:100%;max-height:500px;display:block;outline:none}
 .modal-player-info{padding:10px 14px;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text3);background:var(--bg2)}
 .modal-player-info svg{width:14px;height:14px;color:var(--accent);fill:var(--accent)}
@@ -398,6 +398,10 @@ input{border:none;outline:none;font-family:inherit}
 .video-js .vjs-play-progress{border-radius:2px}
 .video-js .vjs-button>.vjs-icon-placeholder:before{line-height:48px}
 .video-js:hover .vjs-play-progress{background:var(--accent2)}
+.mute-overlay{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:50;display:none;align-items:center;justify-content:center;flex-direction:column;gap:10px;cursor:pointer;background:rgba(0,0,0,.6);border-radius:50%;width:80px;height:80px;transition:all .2s}
+.mute-overlay:hover{background:rgba(14,165,233,.5);transform:translate(-50%,-50%) scale(1.08)}
+.mute-overlay svg{width:36px;height:36px;color:#fff;fill:#fff}
+.mute-overlay-label{position:absolute;top:50%;left:50%;transform:translate(-50%,calc(-50% + 52px));z-index:50;display:none;color:#fff;font-size:11px;font-weight:600;text-shadow:0 1px 4px rgba(0,0,0,.8);pointer-events:none;white-space:nowrap}
 
 /* ===================== PLAYER SETTINGS PANEL ===================== */
 .player-settings{position:absolute;bottom:56px;right:12px;z-index:20;background:rgba(12,18,32,.95);backdrop-filter:blur(16px);border:1px solid var(--border2);border-radius:var(--radius);width:280px;box-shadow:var(--shadow-lg);display:none;overflow:hidden}
@@ -821,6 +825,8 @@ function openModal(id){
         '<track kind="subtitles" label="English CC" srclang="en" src="'+subPath+'_cc.vtt" >'+
         '<p class="vjs-no-js">Включите JavaScript для воспроизведения видео.</p>'+
       '</video>'+
+      '<div class="mute-overlay" id="muteOverlay" onclick="unmutePlayer()"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0014 8.77v6.46A4.47 4.47 0 0016.5 12zM14 3.23v2.06a7 7 0 010 13.42v2.06A9 9 0 0014 3.23z"/></svg></div>'+
+      '<div class="mute-overlay-label" id="muteOverlayLabel">Нажми для звука</div>'+
       '<div class="sub-bar" id="subBar">'+
         '<span class="sub-bar-label">Субтитры</span>'+
         '<button class="sub-bar-btn active" onclick="setSubtitles(false,this)">Выкл</button>'+
@@ -904,16 +910,20 @@ function playVideo(src){
   initVideoPlayer();
   var player=videojs('vjs-player');
   if(!player)return;
-  player.muted(false);
-  player.volume(1);
   player.src({type:'video/mp4; codecs=avc1.64001f, mp4a.40.2',src:src});
   var subPath=src.replace(/\.mp4$/,'');
   var tracks=player.textTracks();
   while(tracks.length>0) player.removeRemoteTextTrack(tracks[0]);
   player.addRemoteTextTrack({src:subPath+'_en.vtt',kind:'subtitles',srclang:'en',label:'English subtitles'},false);
   player.addRemoteTextTrack({src:subPath+'_cc.vtt',kind:'subtitles',srclang:'en',label:'English CC'},false);
-  player.ready(function(){player.muted(false);player.volume(1)});
-  player.play();
+  player.ready(function(){
+    player.muted(true);
+    player.play();
+    var ov=document.getElementById('muteOverlay');
+    var lb=document.getElementById('muteOverlayLabel');
+    if(ov)ov.style.display='flex';
+    if(lb)lb.style.display='block';
+  });
   el.scrollIntoView({behavior:'smooth',block:'center'});
   var info=document.querySelector('.modal-player-info');
   if(info){
@@ -922,6 +932,18 @@ function playVideo(src){
   }
   var ps=document.getElementById('playerSettings');
   if(ps)ps.classList.remove('open');
+}
+function unmutePlayer(){
+  var player=videojs('vjs-player');
+  if(player){
+    player.muted(false);
+    player.volume(1);
+    player.play();
+  }
+  var ov=document.getElementById('muteOverlay');
+  var lb=document.getElementById('muteOverlayLabel');
+  if(ov)ov.style.display='none';
+  if(lb)lb.style.display='none';
 }
 function togglePlayerSettings(e){
   if(e)e.stopPropagation();

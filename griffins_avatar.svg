@@ -8,30 +8,24 @@
   </defs>
   <g clip-path="url(#circle)">
     <rect width="80" height="80" fill="url(#bg)"/>
-    <!-- Peter -->
     <circle cx="26" cy="30" r="10" fill="#c8e6c9"/>
     <circle cx="23" cy="29" r="2.5" fill="#1a1a2e"/>
     <circle cx="29" cy="29" r="2.5" fill="#1a1a2e"/>
     <path d="M22 34 Q26 38 30 34" fill="none" stroke="#1a1a2e" stroke-width="1.2" stroke-linecap="round"/>
     <circle cx="26" cy="25" r="8" fill="#2d5016"/>
-    <!-- Lois -->
     <circle cx="40" cy="30" r="9" fill="#f8bbd0"/>
     <circle cx="37.5" cy="29" r="2" fill="#1a1a2e"/>
     <circle cx="42.5" cy="29" r="2" fill="#1a1a2e"/>
     <path d="M38 33 Q40.5 36 43 33" fill="none" stroke="#1a1a2e" stroke-width="1" stroke-linecap="round"/>
     <circle cx="40" cy="23" r="7" fill="#cc3300"/>
-    <!-- Stewie -->
     <ellipse cx="55" cy="34" rx="8" ry="6" fill="#fce4ec"/>
     <circle cx="52.5" cy="33" r="1.8" fill="#1a1a2e"/>
     <circle cx="57.5" cy="33" r="1.8" fill="#1a1a2e"/>
-    <path d="M53 36 Q55 38 57 36" fill="none" stroke="#1a1a2e" stroke-width="0.8" stroke-linecap="round"/>
     <circle cx="55" cy="28" r="6" fill="#c8a800"/>
-    <!-- Brian (dog) -->
     <ellipse cx="68" cy="36" rx="5" ry="4" fill="#ffffff"/>
     <circle cx="67" cy="35" r="1" fill="#1a1a2e"/>
     <circle cx="69.5" cy="35" r="1" fill="#1a1a2e"/>
-    <ellipse cx="68" cy="37" rx="1.2" ry="0.8" fill="#1a1a2e"/>
-    <!-- BOTTOM ROW - Chris & Meg -->
+    <circle cx="68" cy="37" rx="1.2" ry="0.8" fill="#1a1a2e"/>
     <circle cx="20" cy="54" r="7" fill="#c8e6c9"/>
     <circle cx="18" cy="53" r="1.5" fill="#1a1a2e"/>
     <circle cx="22" cy="53" r="1.5" fill="#1a1a2e"/>

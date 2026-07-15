@@ -904,15 +904,12 @@ function playVideo(src){
   initVideoPlayer();
   var player=videojs('vjs-player');
   if(!player)return;
-  var oldSrc=player.currentSrc();
-  if(oldSrc!==src&&src.indexOf(oldSrc.split('/').pop())===-1){
-    player.src({type:'video/mp4',src:src});
-    var subPath=src.replace(/\.mp4$/,'');
-    var tracks=player.textTracks();
-    while(tracks.length>0) player.removeRemoteTextTrack(tracks[0]);
-    player.addRemoteTextTrack({src:subPath+'_en.vtt',kind:'subtitles',srclang:'en',label:'English subtitles'},false);
-    player.addRemoteTextTrack({src:subPath+'_cc.vtt',kind:'subtitles',srclang:'en',label:'English CC'},false);
-  }
+  player.src({type:'video/mp4',src:src});
+  var subPath=src.replace(/\.mp4$/,'');
+  var tracks=player.textTracks();
+  while(tracks.length>0) player.removeRemoteTextTrack(tracks[0]);
+  player.addRemoteTextTrack({src:subPath+'_en.vtt',kind:'subtitles',srclang:'en',label:'English subtitles'},false);
+  player.addRemoteTextTrack({src:subPath+'_cc.vtt',kind:'subtitles',srclang:'en',label:'English CC'},false);
   player.play();
   el.scrollIntoView({behavior:'smooth',block:'center'});
   var info=document.querySelector('.modal-player-info');

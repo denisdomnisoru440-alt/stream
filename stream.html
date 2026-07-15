@@ -437,6 +437,13 @@ input{border:none;outline:none;font-family:inherit}
 @keyframes shimmer{0%{background-position:-400px 0}100%{background-position:400px 0}}
 .skeleton{background:linear-gradient(90deg,var(--bg3) 25%,var(--bg4) 50%,var(--bg3) 75%);background-size:800px 100%;animation:shimmer 1.5s infinite linear}
 
+/* ===================== EPISODE TABS ===================== */
+.ep-bar{display:flex;gap:4px;padding:8px 12px;background:var(--bg2);border-top:1px solid var(--border)}
+.ep-bar-btn{padding:6px 14px;border-radius:6px;font-size:11px;font-weight:600;color:var(--text3);background:rgba(255,255,255,.04);border:1px solid var(--border);cursor:pointer;transition:all .15s;white-space:nowrap}
+.ep-bar-btn:hover{background:rgba(14,165,233,.08);color:var(--text);border-color:rgba(14,165,233,.2)}
+.ep-bar-btn.active{background:linear-gradient(135deg,#0ea5e9,#06b6d4);color:#fff;border-color:transparent}
+@media(max-width:768px){.ep-bar-btn{padding:5px 10px;font-size:10px}}
+
 /* ===================== SUBTITLE / LANGUAGE BAR ===================== */
 .sub-bar{display:flex;align-items:center;gap:6px;padding:8px 12px;background:var(--bg2);border-bottom:1px solid var(--border);flex-wrap:wrap}
 .sub-bar-label{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;flex-shrink:0}
@@ -814,6 +821,7 @@ function openModal(id){
         '<track kind="subtitles" label="English CC" srclang="en" src="'+subPath+'_cc.vtt" >'+
         '<p class="vjs-no-js">Включите JavaScript для воспроизведения видео.</p>'+
       '</video>'+
+      (hasEps?'<div class="ep-bar" id="epBar">'+item.episodes.map(function(e,i){return '<button class="ep-bar-btn'+(i===0?' active':'')+'" onclick="playEp('+item.id+','+i+',this)">'+e.n+' '+e.t+'</button>'}).join('')+'</div>':'')+
       '<div class="sub-bar" id="subBar">'+
         '<span class="sub-bar-label">Субтитры</span>'+
         '<button class="sub-bar-btn active" onclick="setSubtitles(false,this)">Выкл</button>'+
@@ -880,6 +888,14 @@ function openModal(id){
     '</div>';
   document.getElementById('movieModal').classList.add('open');
   document.body.style.overflow='hidden';
+}
+function playEp(itemId,epIdx,btn){
+  var item=ALL.find(function(i){return i.id===itemId});
+  if(!item||!item.episodes||!item.episodes[epIdx])return;
+  var ep=item.episodes[epIdx];
+  document.querySelectorAll('.ep-bar-btn').forEach(function(b){b.classList.remove('active')});
+  btn.classList.add('active');
+  playVideo(ep.vid);
 }
 function playVideo(src){
   if(!src)return;

@@ -816,7 +816,7 @@ function openModal(id){
     var subPath=vidSrc.replace(/\.mp4$/,'');
     vidHtml='<div class="modal-player">'+
       '<video id="vjs-player" class="video-js vjs-big-play-centered vjs-theme-city" controls preload="metadata" poster="'+posterUrl(item,'w780')+'" data-setup=\'{"fluid":true,"responsive":true}\'>'+
-        '<source src="'+vidSrc+'" type="video/mp4">'+
+        '<source src="'+vidSrc+'" type="video/mp4; codecs=avc1.64001f, mp4a.40.2">'+
         '<track kind="subtitles" label="English subtitles" srclang="en" src="'+subPath+'_en.vtt" >'+
         '<track kind="subtitles" label="English CC" srclang="en" src="'+subPath+'_cc.vtt" >'+
         '<p class="vjs-no-js">Включите JavaScript для воспроизведения видео.</p>'+
@@ -906,7 +906,7 @@ function playVideo(src){
   if(!player)return;
   player.muted(false);
   player.volume(1);
-  player.src({type:'video/mp4',src:src});
+  player.src({type:'video/mp4; codecs=avc1.64001f, mp4a.40.2',src:src});
   var subPath=src.replace(/\.mp4$/,'');
   var tracks=player.textTracks();
   while(tracks.length>0) player.removeRemoteTextTrack(tracks[0]);
